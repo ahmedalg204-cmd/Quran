@@ -3,86 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة متابعة حلقات التحفيظ</title>
+    <title>مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية</title>
     <style>
-        :root { --primary: #059669; --bg: #f3f4f6; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #1f2937; }
-        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        h1, h2 { color: var(--primary); text-align: center; font-size: 1.2rem; }
-        input, select, button { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; }
-        .btn-wa { background: #25D366; color: white; border: none; border-radius: 6px; padding: 8px 12px; font-size: 14px; width: auto; text-decoration: none; display: inline-block; }
-        .student-item { border-bottom: 1px solid #edf2f7; padding: 12px 0; display: flex; flex-direction: column; gap: 8px; }
-        .actions { display: flex; gap: 5px; }
-        .status-btn { flex: 1; padding: 8px; font-size: 12px; }
+        :root { --primary: #065f46; --secondary: #047857; --accent: #f59e0b; --bg: #f3f4f6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 20px 15px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .header h1 { margin: 0; font-size: 1.25rem; font-weight: bold; }
+        .header p { margin: 5px 0 0; font-size: 0.85rem; opacity: 0.9; }
+        .card { background: white; border-radius: 14px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card h2 { color: var(--primary); margin-top: 0; font-size: 1.05rem; border-bottom: 2px solid #ecfdf5; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; text-align: center; }
+        .stat-card { background: #ecfdf5; padding: 10px; border-radius: 10px; border: 1px solid #a7f3d0; }
+        .stat-card div { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+        .stat-card span { font-size: 0.75rem; color: #047857; }
+        input, select, button, textarea { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        button { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; }
+        .student-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
+        .student-title { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #111827; }
+        .badge { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: normal; }
+        .actions { display: flex; gap: 6px; margin-top: 8px; }
+        .status-btn { flex: 1; padding: 8px; font-size: 13px; border-radius: 6px; border: none; color: white; font-weight: bold; }
         .present { background: #10B981; }
         .absent { background: #EF4444; }
+        .weekly-btn { background: #8B5CF6; }
+        .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: #e5e7eb; color: #374151; font-size: 14px; border-radius: 8px; text-align: center; }
+        .tab-btn.active { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
-    <h1>🕌 منصة متابعة حلقات التحفيظ</h1>
-
-    <!-- إضافة طالب -->
-    <div class="card">
-        <h2>إضافة طالب جديد</h2>
-        <input type="text" id="studentName" placeholder="اسم الطالب">
-        <input type="tel" id="parentPhone" placeholder="رقم واتساب ولي الأمر (مثال: 2189xxxxxxx)">
-        <button onclick="addStudent()">حفظ الطالب</button>
+    <!-- الهيدر الرئيسي -->
+    <div class="header">
+        <h1>🕌 مركز أم القرى</h1>
+        <p>لتحفيظ القرآن الكريم والسنة النبوية</p>
     </div>
 
-    <!-- قائمة الطلاب ومتابعة الحضور -->
-    <div class="card">
-        <h2>قائمة الطلاب والحضور اليومي</h2>
-        <div id="studentsList"></div>
+    <!-- تبويبات التنقل -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="tabMainBtn" onclick="switchTab('main')">إدارة الحضور</button>
+        <button class="tab-btn" id="tabOwnerBtn" onclick="switchTab('owner')">📊 لوحة المشرف (الأونر)</button>
+    </div>
+
+    <!-- واجهة إدارة الحضور اليومي والتقدم -->
+    <div id="tabMain">
+        <!-- إضافة طالب جديد -->
+        <div class="card">
+            <h2>➕ تسجيل طالب جديد</h2>
+            <input type="text" id="studentName" placeholder="اسم الطالب الثلاثي">
+            <input type="tel" id="parentPhone" placeholder="رقم واتساب ولي الأمر (مثال: 2189xxxxxxx)">
+            <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: حلقة الإمام نافع)">
+            <button onclick="addStudent()">حفظ الطالب</button>
+        </div>
+
+        <!-- قائمة الطلاب -->
+        <div class="card">
+            <h2>👥 قائمة الطلاب والتحضير اليومي</h2>
+            <div id="studentsList"></div>
+        </div>
+    </div>
+
+    <!-- واجهة المشرف (الأونر) والتقارير الأسبوعية -->
+    <div id="tabOwner" style="display: none;">
+        <!-- الإحصائيات العامة -->
+        <div class="card">
+            <h2>📊 إحصائيات المركز الشاملة</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div id="totalStudentsCount">0</div>
+                    <span>إجمالي الطلاب</span>
+                </div>
+                <div class="stat-card">
+                    <div id="todayPresentCount">0</div>
+                    <span>حضور اليوم</span>
+                </div>
+                <div class="stat-card">
+                    <div id="todayAbsentCount">0</div>
+                    <span>غياب اليوم</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- سجلات الحضور والغياب -->
+        <div class="card">
+            <h2>📜 سجل نشاط التقدم الأسبوعي والتقرير</h2>
+            <div id="ownerWeeklyLogs"></div>
+        </div>
     </div>
 
     <script>
-        let students = JSON.parse(localStorage.getItem('quran_students')) || [];
+        let students = JSON.parse(localStorage.getItem('um_alqura_students')) || [];
+        let logs = JSON.parse(localStorage.getItem('um_alqura_logs')) || [];
 
         function saveAndRender() {
-            localStorage.setItem('quran_students', JSON.stringify(students));
+            localStorage.setItem('um_alqura_students', JSON.stringify(students));
+            localStorage.setItem('um_alqura_logs', JSON.stringify(logs));
             renderStudents();
+            renderOwnerDashboard();
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tabMain').style.display = tab === 'main' ? 'block' : 'none';
+            document.getElementById('tabOwner').style.display = tab === 'owner' ? 'block' : 'none';
+            document.getElementById('tabMainBtn').classList.toggle('active', tab === 'main');
+            document.getElementById('tabOwnerBtn').classList.toggle('active', tab === 'owner');
+            if (tab === 'owner') renderOwnerDashboard();
         }
 
         function addStudent() {
             const name = document.getElementById('studentName').value.trim();
             const phone = document.getElementById('parentPhone').value.trim();
-            if (!name || !phone) return alert('الرجاء إدخال الاسم ورقم الهاتف');
-            
-            students.push({ id: Date.now(), name, phone, progress: '' });
+            const haloqa = document.getElementById('haloqaName').value.trim() || 'الحلقة العامة';
+
+            if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف بشكل صحيح');
+
+            students.push({
+                id: Date.now(),
+                name,
+                phone,
+                haloqa,
+                todayProgress: '',
+                weeklyProgress: ''
+            });
+
             document.getElementById('studentName').value = '';
             document.getElementById('parentPhone').value = '';
+            document.getElementById('haloqaName').value = '';
             saveAndRender();
         }
 
         function deleteStudent(id) {
-            if (confirm('هل أنت تأكد من مسح الطالب؟')) {
+            if (confirm('هل أنت تأكد من مسح بيانات الطالب نهائياً؟')) {
                 students = students.filter(s => s.id !== id);
                 saveAndRender();
             }
         }
 
-        function updateProgress(id, val) {
+        function updateField(id, field, value) {
             const student = students.find(s => s.id === id);
-            if (student) student.progress = val;
-            localStorage.setItem('quran_students', JSON.stringify(students));
+            if (student) {
+                student[field] = value;
+                localStorage.setItem('um_alqura_students', JSON.stringify(students));
+            }
         }
 
         function sendWhatsApp(id, type) {
             const student = students.find(s => s.id === id);
             if (!student) return;
-            
+
             const today = new Date().toLocaleDateString('ar-LY');
             let msg = "";
 
             if (type === 'absent') {
-                msg = `السلام عليكم ورحمة الله، نفيدكم بأن ابنكم (${student.name}) كان غائباً اليوم بتاريخ ${today} عن حلقة التحفيظ.`;
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بأن ابنكم الطالب: *${student.name}*\nكان *غائباً* اليوم (${today}) عن الحلقة.`;
+                logs.push({ time: today, text: `تسجيل غياب للطفل ${student.name}` });
             } else if (type === 'present') {
-                const progText = student.progress ? `\nمقدار إنجازه اليوم: ${student.progress}` : '';
-                msg = `السلام عليكم ورحمة الله، نفيدكم بحضور ابنكم (${student.name}) اليوم بتاريخ ${today} للحلقة.${progText}`;
+                const progText = student.todayProgress ? `\nمقدار حفظ اليوم: ${student.todayProgress}` : '';
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بحضور ابنكم الطالب: *${student.name}*\nاليوم (${today}).${progText}\nبارك الله في جهوده.`;
+                logs.push({ time: today, text: `تسجيل حضور للطفل ${student.name}` });
+            } else if (type === 'weekly') {
+                const weekProg = student.weeklyProgress || 'مستمر في خطة الحفظ والمراجعة المقررة';
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n📊 *التقرير الأسبوعي لمستوى الطالب*\nالاسم: *${student.name}*\nالحلقة: *${student.haloqa}*\n\nملخص الانجاز والتفوق هذا الأسبوع:\n${weekProg}\n\nشاكرين حرصكم ومتابعتكم الكريمة.`;
             }
 
+            saveAndRender();
             const url = `https://wa.me/${student.phone}?text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank');
         }
@@ -96,15 +180,36 @@
 
             listContainer.innerHTML = students.map(s => `
                 <div class="student-item">
-                    <strong>👤 ${s.name}</strong>
-                    <input type="text" placeholder="التقدم (مثال: حفظ سورة النبأ)" value="${s.progress || ''}" onchange="updateProgress(${s.id}, this.value)">
-                    <div class="actions">
-                        <button class="status-btn present" onclick="sendWhatsApp(${s.id}, 'present')">حاضر + واتساب 💬</button>
-                        <button class="status-btn absent" onclick="sendWhatsApp(${s.id}, 'absent')">غائب + واتساب 💬</button>
+                    <div class="student-title">
+                        <span>👤 ${s.name}</span>
+                        <span class="badge">${s.haloqa}</span>
                     </div>
-                    <button style="background:none; color:#ef4444; font-size:12px; padding:2px; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
+                    <input type="text" placeholder="حفظ اليوم (مثال: حفظ سورة النبأ)" value="${s.todayProgress || ''}" onchange="updateField(${s.id}, 'todayProgress', this.value)">
+                    <input type="text" placeholder="التقدم الأسبوعي (لتقرير نهاية الأسبوع)" value="${s.weeklyProgress || ''}" onchange="updateField(${s.id}, 'weeklyProgress', this.value)">
+                    
+                    <div class="actions">
+                        <button class="status-btn present" onclick="sendWhatsApp(${s.id}, 'present')">حاضر 💬</button>
+                        <button class="status-btn absent" onclick="sendWhatsApp(${s.id}, 'absent')">غائب 💬</button>
+                        <button class="status-btn weekly-btn" onclick="sendWhatsApp(${s.id}, 'weekly')">تقرير أسبوعي 📊</button>
+                    </div>
+                    <button style="background:none; color:#ef4444; font-size:11px; padding:4px 0; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
                 </div>
             `).join('');
+        }
+
+        function renderOwnerDashboard() {
+            document.getElementById('totalStudentsCount').innerText = students.length;
+            
+            const logsContainer = document.getElementById('ownerWeeklyLogs');
+            if (logs.length === 0) {
+                logsContainer.innerHTML = '<p style="text-align:center; color:#6b7280; font-size:13px;">لا توجد سجلات حديثة</p>';
+            } else {
+                logsContainer.innerHTML = logs.slice(-10).reverse().map(l => `
+                    <div style="font-size:12px; padding:6px 0; border-bottom:1px solid #f3f4f6;">
+                        <span style="color:#6b7280;">[${l.time}]</span> ${l.text}
+                    </div>
+                `).join('');
+            }
         }
 
         renderStudents();
