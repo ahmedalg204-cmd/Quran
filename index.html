@@ -65,11 +65,12 @@
             <input type="tel" id="loginPhone" placeholder="أدخل رقم الهاتف (مثال: 091xxxxxxx)">
             <button onclick="searchParentStudent()" style="background: #2563eb;">عرض تقرير الطالب 📡</button>
         </div>
+
         <div id="parentResult"></div>
     </div>
 
     <script>
-        const API_ENDPOINT = "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
+        const API_URL = "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
         const API_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
 
         const headers = {
@@ -81,12 +82,12 @@
 
         async function fetchStudents() {
             try {
-                const res = await fetch(`${API_ENDPOINT}?select=*&order=id.desc`, { headers });
-                if (!res.ok) throw new Error();
+                const res = await fetch(`${API_URL}?select=*&order=id.desc`, { headers });
+                if(!res.ok) throw new Error();
                 const data = await res.json();
                 renderStudents(data);
             } catch (err) {
-                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">تعذر الاتصال، يرجى التأكد من الضغط على Run في Supabase</p>`;
+                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">حدث خطأ في تحميل البيانات، يرجى تحديث الصفحة</p>`;
             }
         }
 
@@ -101,32 +102,49 @@
             const name = document.getElementById('studentName').value.trim();
             const phone = document.getElementById('parentPhone').value.trim();
             const haloqa = document.getElementById('haloqaName').value.trim() || 'الحلقة العامة';
-            const currentJuz = document.getElementById('startJuz').value || 'الجزء 1';
+            const juzValue = document.getElementById('startJuz').value || 'الجزء 1';
 
             if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف');
 
+            // إرسال الحقول كلاً بالحروف الصغيرة لتجنب تعارض Supabase
+            const payload = {
+                name: name,
+                phone: phone,
+                haloqa: haloqa,
+                currentjuz: juzValue
+            };
+
             try {
-                const res = await fetch(API_ENDPOINT, {
+                const res = await fetch(API_URL, {
                     method: 'POST',
-                    headers,
-                    body: JSON.stringify({ name, phone, haloqa, currentJuz })
+                    headers: headers,
+                    body: JSON.stringify(payload)
                 });
 
-                if (!res.ok) throw new Error();
+                if(!res.ok) {
+                    // تجربة الإرسال البديل بحال كان الاسم معرّف كاملاً
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({ name, phone, haloqa, currentJuz: juzValue })
+                    });
+                }
 
                 document.getElementById('studentName').value = '';
                 document.getElementById('parentPhone').value = '';
                 document.getElementById('haloqaName').value = '';
                 fetchStudents();
-            } catch (err) {
-                alert('حدث خطأ أثناء حفظ الطالب');
+            } catch(err) {
+                alert('فشل حفظ البيانات، تأكد من الاتصال');
             }
         }
 
         async function deleteStudent(id) {
             if (confirm('هل أنت تأكد من مسح هذا الطالب؟')) {
-                await fetch(`${API_ENDPOINT}?id=eq.${id}`, { method: 'DELETE', headers });
-                fetchStudents();
+                try {
+                    await fetch(`${API_URL}?id=eq.${id}`, { method: 'DELETE', headers });
+                    fetchStudents();
+                } catch(e) { fetchStudents(); }
             }
         }
 
@@ -136,14 +154,14 @@
 
             if (!phoneInput) return alert('يرجى إدخال رقم الهاتف');
 
-            resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث...</p>';
+            resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث عن بيانات الطالب...</p>';
 
             try {
-                const res = await fetch(`${API_ENDPOINT}?phone=ilike.*${encodeURIComponent(phoneInput)}*&select=*`, { headers });
+                const res = await fetch(`${API_URL}?phone=ilike.*${encodeURIComponent(phoneInput)}*&select=*`, { headers });
                 const data = await res.json();
 
                 if (!Array.isArray(data) || data.length === 0) {
-                    resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">❌ لم يتم العثور على طالب بهذا الرقم.</div>`;
+                    resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">❌ لم يتم العثور على طالب مسجل بهذا الرقم.</div>`;
                     return;
                 }
 
@@ -152,11 +170,11 @@
                         <h2 style="margin:0;">👤 الطالب: ${s.name}</h2>
                         <p style="margin:4px 0; font-size:13px; color:#4b5563;">🕌 الحلقة: <strong>${s.haloqa || 'العامة'}</strong></p>
                         <hr style="border:none; border-top:1px solid #f3f4f6; margin:8px 0;">
-                        <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentJuz || 'الجزء 1'}</p>
+                        <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentjuz || s.currentJuz || 'الجزء 1'}</p>
                     </div>
                 `).join('');
-            } catch (err) {
-                resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">خطأ في الاتصال</div>`;
+            } catch(err) {
+                resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">حدث خطأ في الاتصال</div>`;
             }
         }
 
@@ -173,7 +191,7 @@
                         <span>👤 ${s.name}</span>
                         <span class="badge">📱 ${s.phone}</span>
                     </div>
-                    <p style="font-size:12px; margin:4px 0;">الحلقة: ${s.haloqa || '-'} | الجزء: ${s.currentJuz || '-'}</p>
+                    <p style="font-size:12px; margin:4px 0;">الحلقة: ${s.haloqa || '-'} | الجزء: ${s.currentjuz || s.currentJuz || '-'}</p>
                     <button style="background:none; color:#ef4444; font-size:11px; padding:4px 0; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
                 </div>
             `).join('');
