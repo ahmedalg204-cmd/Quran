@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,10 @@
             --primary: #065f46;
             --secondary: #047857;
             --bg: #f3f4f6;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -67,7 +72,6 @@
             margin: 4px 0;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            box-sizing: border-box;
             font-size: 14px;
         }
 
@@ -77,7 +81,6 @@
             font-weight: bold;
             border: none;
             cursor: pointer;
-            border-radius: 8px;
         }
 
         button:hover {
@@ -96,9 +99,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
             font-weight: bold;
             color: #111827;
-            gap: 8px;
         }
 
         .badge {
@@ -137,6 +140,12 @@
             color: white;
         }
 
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            padding: 15px;
+        }
+
         .error-box {
             background: #fee2e2;
             color: #991b1b;
@@ -158,47 +167,51 @@
             margin-top: 10px;
             text-align: center;
         }
-
-        .loading {
-            text-align: center;
-            color: #6b7280;
-            padding: 15px;
-        }
     </style>
 </head>
 
 <body>
 
     <!-- HEADER -->
+
     <div class="header">
         <h1>🕌 مركز أم القرى</h1>
         <p>لتحفيظ القرآن الكريم والسنة النبوية</p>
     </div>
 
+
     <!-- TABS -->
+
     <div class="nav-tabs">
+
         <button
             class="tab-btn active"
             id="tabMainBtn"
             onclick="switchTab('main')">
+
             إدارة المركز (المعلم)
+
         </button>
+
 
         <button
             class="tab-btn"
             id="tabParentBtn"
             onclick="switchTab('parent')">
+
             👨‍👩‍👦 بوابة ولي الأمر
+
         </button>
+
     </div>
 
+
     <!-- ========================= -->
-    <!-- MAIN / TEACHER -->
+    <!-- إدارة المركز -->
     <!-- ========================= -->
 
     <div id="tabMain">
 
-        <!-- ADD STUDENT -->
         <div class="card">
 
             <h2>➕ تسجيل طالب جديد</h2>
@@ -206,19 +219,22 @@
             <input
                 type="text"
                 id="studentName"
-                placeholder="اسم الطالب الثلاثي">
+                placeholder="اسم الطالب الثلاثي"
+            >
 
             <input
                 type="tel"
                 id="parentPhone"
-                placeholder="رقم هاتف ولي الأمر (مثال: 091xxxxxxx)">
+                placeholder="رقم هاتف ولي الأمر (مثال: 091xxxxxxx)"
+            >
 
             <div class="form-row">
 
                 <input
                     type="text"
                     id="haloqaName"
-                    placeholder="اسم الحلقة (مثال: قالون)">
+                    placeholder="اسم الحلقة (مثال: قالون)"
+                >
 
                 <select id="startJuz">
 
@@ -238,24 +254,27 @@
 
             </div>
 
+
             <button onclick="addStudent()">
                 حفظ الطالب في السحابة ☁️
             </button>
+
 
             <div id="addMessage"></div>
 
         </div>
 
 
-        <!-- STUDENTS -->
         <div class="card">
 
             <h2>👥 قائمة الطلاب والتحضير السحابي</h2>
 
             <div id="studentsList">
+
                 <div class="loading">
                     جاري الاتصال بالسحابة...
                 </div>
+
             </div>
 
         </div>
@@ -264,35 +283,51 @@
 
 
     <!-- ========================= -->
-    <!-- PARENT -->
+    <!-- بوابة ولي الأمر -->
     <!-- ========================= -->
 
-    <div id="tabParent" style="display:none;">
+    <div
+        id="tabParent"
+        style="display:none;"
+    >
 
         <div class="card">
 
             <h2>🔑 تسجيل دخول ولي الأمر</h2>
 
-            <p style="font-size:12px;color:#6b7280;">
+            <p
+                style="
+                    font-size:12px;
+                    color:#6b7280;
+                "
+            >
                 أدخل رقم الهاتف المسجل للاطلاع على تقرير الطالب المحدث أونلاين:
             </p>
+
 
             <input
                 type="tel"
                 id="loginPhone"
-                placeholder="أدخل رقم الهاتف (مثال: 091xxxxxxx)">
+                placeholder="أدخل رقم الهاتف (مثال: 091xxxxxxx)"
+            >
+
 
             <button
                 onclick="searchParentStudent()"
-                style="background:#2563eb;">
+                style="background:#2563eb;"
+            >
+
                 عرض تقرير الطالب 📡
+
             </button>
 
         </div>
 
+
         <div id="parentResult"></div>
 
     </div>
+
 
 
     <!-- ========================= -->
@@ -301,64 +336,91 @@
 
     <script>
 
+
         /*
         ==========================================
-        SUPABASE SETTINGS
+        SUPABASE
         ==========================================
         */
 
+        const SUPABASE_URL =
+            "https://lqththarryzdanqfeqsa.supabase.co";
+
+
         const API_URL =
-            "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
+            SUPABASE_URL + "/rest/v1/students";
+
 
         const API_KEY =
             "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
 
 
-        /*
-        ==========================================
-        HEADERS
-        ==========================================
-        */
-
         const headers = {
+
             "apikey": API_KEY,
-            "Authorization": "Bearer " + API_KEY,
-            "Content-Type": "application/json"
+
+            "Authorization":
+                "Bearer " + API_KEY,
+
+            "Content-Type":
+                "application/json"
+
         };
 
 
+
         /*
         ==========================================
-        SWITCH TABS
+        تبديل الصفحات
         ==========================================
         */
 
         function switchTab(tab) {
 
             document.getElementById("tabMain").style.display =
-                tab === "main" ? "block" : "none";
+                tab === "main"
+                    ? "block"
+                    : "none";
+
 
             document.getElementById("tabParent").style.display =
-                tab === "parent" ? "block" : "none";
+                tab === "parent"
+                    ? "block"
+                    : "none";
 
-            document.getElementById("tabMainBtn")
-                .classList.toggle("active", tab === "main");
 
-            document.getElementById("tabParentBtn")
-                .classList.toggle("active", tab === "parent");
+            document
+                .getElementById("tabMainBtn")
+                .classList.toggle(
+                    "active",
+                    tab === "main"
+                );
+
+
+            document
+                .getElementById("tabParentBtn")
+                .classList.toggle(
+                    "active",
+                    tab === "parent"
+                );
+
         }
+
 
 
         /*
         ==========================================
-        FETCH STUDENTS
+        تحميل الطلاب
         ==========================================
         */
 
         async function fetchStudents() {
 
             const list =
-                document.getElementById("studentsList");
+                document.getElementById(
+                    "studentsList"
+                );
+
 
             try {
 
@@ -368,31 +430,29 @@
                     </div>
                 `;
 
+
                 const res = await fetch(
-                    `${API_URL}?select=*&order=id.desc`,
+
+                    API_URL +
+                    "?select=*&order=id.desc",
+
                     {
                         method: "GET",
                         headers: headers
                     }
+
                 );
 
-
-                /*
-                قراءة الرد حتى لو كان Error
-                */
 
                 const responseText =
                     await res.text();
 
 
-                /*
-                عرض التفاصيل في Console
-                */
-
                 console.log(
                     "Supabase Status:",
                     res.status
                 );
+
 
                 console.log(
                     "Supabase Response:",
@@ -400,31 +460,30 @@
                 );
 
 
-                /*
-                إذا كان هناك خطأ
-                */
-
                 if (!res.ok) {
 
                     throw new Error(
-                        `HTTP ${res.status}: ${responseText}`
+                        "HTTP " +
+                        res.status +
+                        ": " +
+                        responseText
                     );
 
                 }
 
 
-                /*
-                تحويل البيانات إلى JSON
-                */
-
                 const data =
-                    JSON.parse(responseText);
+                    JSON.parse(
+                        responseText
+                    );
 
 
                 renderStudents(data);
 
 
-            } catch (err) {
+            }
+
+            catch (err) {
 
                 console.error(
                     "SUPABASE ERROR:",
@@ -442,52 +501,71 @@
 
                         <br><br>
 
-                        ${escapeHTML(err.message)}
-
-                        <br><br>
-
-                        <strong>
-                            افتح Console في المتصفح لمعرفة التفاصيل.
-                        </strong>
+                        ${escapeHTML(
+                            err.message
+                        )}
 
                     </div>
 
                 `;
+
             }
+
         }
+
 
 
         /*
         ==========================================
-        ADD STUDENT
+        إضافة طالب
         ==========================================
         */
 
         async function addStudent() {
 
             const name =
-                document.getElementById("studentName")
-                .value
-                .trim();
+                document
+                    .getElementById(
+                        "studentName"
+                    )
+                    .value
+                    .trim();
+
 
             const phone =
-                document.getElementById("parentPhone")
-                .value
-                .trim();
+                document
+                    .getElementById(
+                        "parentPhone"
+                    )
+                    .value
+                    .trim();
+
 
             const haloqa =
-                document.getElementById("haloqaName")
-                .value
-                .trim() ||
-                "الحلقة العامة";
+                document
+                    .getElementById(
+                        "haloqaName"
+                    )
+                    .value
+                    .trim()
+                    ||
+                    "الحلقة العامة";
+
 
             const currentjuz =
-                document.getElementById("startJuz")
-                .value ||
-                "الجزء 1";
+                document
+                    .getElementById(
+                        "startJuz"
+                    )
+                    .value
+                    ||
+                    "الجزء 1";
+
 
             const message =
-                document.getElementById("addMessage");
+                document.getElementById(
+                    "addMessage"
+                );
 
 
             if (!name || !phone) {
@@ -497,35 +575,57 @@
                 );
 
                 return;
+
             }
 
 
             try {
 
                 message.innerHTML = `
+
                     <div class="loading">
                         جاري حفظ الطالب...
                     </div>
+
                 `;
 
 
                 const res = await fetch(
+
                     API_URL,
+
                     {
+
                         method: "POST",
 
                         headers: {
+
                             ...headers,
-                            "Prefer": "return=representation"
+
+                            "Prefer":
+                                "return=representation"
+
                         },
 
+
                         body: JSON.stringify({
-                            name: name,
-                            phone: phone,
-                            haloqa: haloqa,
-                            currentjuz: currentjuz
+
+                            name:
+                                name,
+
+                            phone:
+                                phone,
+
+                            haloqa:
+                                haloqa,
+
+                            currentjuz:
+                                currentjuz
+
                         })
+
                     }
+
                 );
 
 
@@ -538,6 +638,7 @@
                     res.status
                 );
 
+
                 console.log(
                     "Add Student Response:",
                     responseText
@@ -547,23 +648,24 @@
                 if (!res.ok) {
 
                     throw new Error(
-                        `HTTP ${res.status}: ${responseText}`
+                        "HTTP " +
+                        res.status +
+                        ": " +
+                        responseText
                     );
 
                 }
 
 
-                /*
-                تنظيف الحقول
-                */
-
                 document.getElementById(
                     "studentName"
                 ).value = "";
 
+
                 document.getElementById(
                     "parentPhone"
                 ).value = "";
+
 
                 document.getElementById(
                     "haloqaName"
@@ -571,20 +673,21 @@
 
 
                 message.innerHTML = `
+
                     <div class="success-box">
+
                         ✅ تم حفظ الطالب بنجاح
+
                     </div>
+
                 `;
 
 
-                /*
-                إعادة تحميل القائمة
-                */
-
                 fetchStudents();
 
+            }
 
-            } catch (err) {
+            catch (err) {
 
                 console.error(
                     "ADD STUDENT ERROR:",
@@ -602,18 +705,23 @@
 
                         <br><br>
 
-                        ${escapeHTML(err.message)}
+                        ${escapeHTML(
+                            err.message
+                        )}
 
                     </div>
 
                 `;
+
             }
+
         }
+
 
 
         /*
         ==========================================
-        DELETE STUDENT
+        حذف طالب
         ==========================================
         */
 
@@ -624,40 +732,43 @@
                     "هل أنت متأكد من مسح هذا الطالب؟"
                 )
             ) {
+
                 return;
+
             }
 
 
             try {
 
-                const res = await fetch(
-                    `${API_URL}?id=eq.${id}`,
-                    {
-                        method: "DELETE",
-                        headers: headers
-                    }
-                );
+                const res =
+                    await fetch(
+
+                        API_URL +
+                        "?id=eq." +
+                        encodeURIComponent(id),
+
+                        {
+
+                            method: "DELETE",
+
+                            headers: headers
+
+                        }
+
+                    );
 
 
                 const responseText =
                     await res.text();
 
 
-                console.log(
-                    "Delete Status:",
-                    res.status
-                );
-
-                console.log(
-                    "Delete Response:",
-                    responseText
-                );
-
-
                 if (!res.ok) {
 
                     throw new Error(
-                        `HTTP ${res.status}: ${responseText}`
+                        "HTTP " +
+                        res.status +
+                        ": " +
+                        responseText
                     );
 
                 }
@@ -665,13 +776,9 @@
 
                 fetchStudents();
 
+            }
 
-            } catch (err) {
-
-                console.error(
-                    "DELETE ERROR:",
-                    err
-                );
+            catch (err) {
 
                 alert(
                     "فشل حذف الطالب:\n\n" +
@@ -679,23 +786,27 @@
                 );
 
             }
+
         }
+
 
 
         /*
         ==========================================
-        PARENT SEARCH
+        البحث لولي الأمر
         ==========================================
         */
 
         async function searchParentStudent() {
 
             const phoneInput =
-                document.getElementById(
-                    "loginPhone"
-                )
-                .value
-                .trim();
+                document
+                    .getElementById(
+                        "loginPhone"
+                    )
+                    .value
+                    .trim();
+
 
             const resultDiv =
                 document.getElementById(
@@ -710,59 +821,71 @@
                 );
 
                 return;
+
             }
 
 
             resultDiv.innerHTML = `
+
                 <div class="card">
+
                     <div class="loading">
                         جاري البحث أونلاين...
                     </div>
+
                 </div>
+
             `;
 
 
             try {
 
                 const url =
-                    `${API_URL}?phone=eq.${encodeURIComponent(phoneInput)}&select=*`;
+
+                    API_URL +
+
+                    "?phone=eq." +
+
+                    encodeURIComponent(
+                        phoneInput
+                    ) +
+
+                    "&select=*";
 
 
-                const res = await fetch(
-                    url,
-                    {
-                        method: "GET",
-                        headers: headers
-                    }
-                );
+                const res =
+                    await fetch(
+
+                        url,
+
+                        {
+                            method: "GET",
+                            headers: headers
+                        }
+
+                    );
 
 
                 const responseText =
                     await res.text();
 
 
-                console.log(
-                    "Parent Search Status:",
-                    res.status
-                );
-
-                console.log(
-                    "Parent Search Response:",
-                    responseText
-                );
-
-
                 if (!res.ok) {
 
                     throw new Error(
-                        `HTTP ${res.status}: ${responseText}`
+                        "HTTP " +
+                        res.status +
+                        ": " +
+                        responseText
                     );
 
                 }
 
 
                 const data =
-                    JSON.parse(responseText);
+                    JSON.parse(
+                        responseText
+                    );
 
 
                 if (
@@ -787,11 +910,15 @@
                     `;
 
                     return;
+
                 }
 
 
                 resultDiv.innerHTML =
-                    data.map(s => `
+
+                    data.map(
+
+                        s => `
 
                         <div
                             class="card"
@@ -802,8 +929,13 @@
                         >
 
                             <h2 style="margin:0;">
+
                                 👤 الطالب:
-                                ${escapeHTML(s.name)}
+
+                                ${escapeHTML(
+                                    s.name
+                                )}
+
                             </h2>
 
 
@@ -818,10 +950,12 @@
                                 🕌 الحلقة:
 
                                 <strong>
+
                                     ${escapeHTML(
                                         s.haloqa ||
                                         "العامة"
                                     )}
+
                                 </strong>
 
                             </p>
@@ -840,6 +974,7 @@
                             <p style="margin:6px 0;">
 
                                 📖
+
                                 <strong>
                                     الجزء الحالي:
                                 </strong>
@@ -853,11 +988,13 @@
 
                         </div>
 
-                    `)
-                    .join("");
+                    `
 
+                    ).join("");
 
-            } catch (err) {
+            }
+
+            catch (err) {
 
                 console.error(
                     "PARENT SEARCH ERROR:",
@@ -875,18 +1012,23 @@
 
                         <br><br>
 
-                        ${escapeHTML(err.message)}
+                        ${escapeHTML(
+                            err.message
+                        )}
 
                     </div>
 
                 `;
+
             }
+
         }
+
 
 
         /*
         ==========================================
-        RENDER STUDENTS
+        عرض الطلاب
         ==========================================
         */
 
@@ -911,31 +1053,47 @@
                             color:#6b7280;
                         "
                     >
+
                         لا يوجد طلاب مضافون حتى الآن
+
                     </p>
 
                 `;
 
                 return;
+
             }
 
 
             listContainer.innerHTML =
-                students.map(s => `
+
+                students.map(
+
+                    s => `
 
                     <div class="student-item">
 
                         <div class="student-title">
 
                             <span>
+
                                 👤
-                                ${escapeHTML(s.name)}
+
+                                ${escapeHTML(
+                                    s.name
+                                )}
+
                             </span>
 
 
                             <span class="badge">
+
                                 📱
-                                ${escapeHTML(s.phone)}
+
+                                ${escapeHTML(
+                                    s.phone
+                                )}
+
                             </span>
 
                         </div>
@@ -951,7 +1109,8 @@
                             الحلقة:
 
                             ${escapeHTML(
-                                s.haloqa || "-"
+                                s.haloqa ||
+                                "-"
                             )}
 
                             |
@@ -959,13 +1118,15 @@
                             الجزء:
 
                             ${escapeHTML(
-                                s.currentjuz || "-"
+                                s.currentjuz ||
+                                "-"
                             )}
 
                         </p>
 
 
                         <button
+
                             style="
                                 background:none;
                                 color:#ef4444;
@@ -973,8 +1134,11 @@
                                 padding:4px 0;
                                 text-align:left;
                             "
+
                             onclick="
-                                deleteStudent(${s.id})
+                                deleteStudent(
+                                    ${s.id}
+                                )
                             "
                         >
 
@@ -984,35 +1148,66 @@
 
                     </div>
 
-                `)
-                .join("");
+                `
+
+                ).join("");
+
         }
+
 
 
         /*
         ==========================================
-        SECURITY / HTML ESCAPE
+        حماية عرض النصوص
         ==========================================
         */
 
         function escapeHTML(value) {
 
-            if (value === null || value === undefined) {
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
                 return "";
+
             }
 
+
             return String(value)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
         }
+
 
 
         /*
         ==========================================
-        START
+        تشغيل الموقع
         ==========================================
         */
 
