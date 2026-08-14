@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية</title>
-    <!-- استدعاء مكتبة Supabase الرسمية -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #065f46; --secondary: #047857; --accent: #d97706; --bg: #f3f4f6; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
@@ -77,60 +75,25 @@
         const SUPABASE_URL = "https://lqhtharryzdanqfeqsa.supabase.co";
         const SUPABASE_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
 
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        const quranSurahs = [
-            { name: "الفاتحة", verses: 7 }, { name: "البقرة", verses: 286 }, { name: "آل عمران", verses: 200 },
-            { name: "النساء", verses: 176 }, { name: "المائدة", verses: 120 }, { name: "الأنعام", verses: 165 },
-            { name: "الأعراف", verses: 206 }, { name: "الأنفال", verses: 75 }, { name: "التوبة", verses: 129 },
-            { name: "يونس", verses: 109 }, { name: "هود", verses: 123 }, { name: "يوسف", verses: 111 },
-            { name: "الرعد", verses: 43 }, { name: "إبراهيم", verses: 52 }, { name: "الحجر", verses: 99 },
-            { name: "النحل", verses: 128 }, { name: "الإسراء", verses: 111 }, { name: "الكهف", verses: 110 },
-            { name: "مريم", verses: 98 }, { name: "طه", verses: 135 }, { name: "الأنبياء", verses: 112 },
-            { name: "الحج", verses: 78 }, { name: "المؤمنون", verses: 118 }, { name: "النور", verses: 64 },
-            { name: "الفرقان", verses: 77 }, { name: "الشعراء", verses: 227 }, { name: "النمل", verses: 93 },
-            { name: "القصص", verses: 88 }, { name: "العنكبوت", verses: 69 }, { name: "الروم", verses: 60 },
-            { name: "لقمان", verses: 34 }, { name: "السجدة", verses: 30 }, { name: "الأحزاب", verses: 73 },
-            { name: "سبأ", verses: 54 }, { name: "فاطر", verses: 45 }, { name: "يس", verses: 83 },
-            { name: "الصافات", verses: 182 }, { name: "ص", verses: 88 }, { name: "الزمر", verses: 75 },
-            { name: "غافر", verses: 85 }, { name: "فصلت", verses: 54 }, { name: "الشورى", verses: 53 },
-            { name: "الزخرف", verses: 89 }, { name: "الدخان", verses: 59 }, { name: "الجاثية", verses: 37 },
-            { name: "الأحقاف", verses: 35 }, { name: "محمد", verses: 38 }, { name: "الفتح", verses: 29 },
-            { name: "الحجرات", verses: 18 }, { name: "ق", verses: 45 }, { name: "الذاريات", verses: 60 },
-            { name: "الطور", verses: 49 }, { name: "النجم", verses: 62 }, { name: "القمر", verses: 55 },
-            { name: "الرحمن", verses: 78 }, { name: "الواقعة", verses: 96 }, { name: "الحديد", verses: 29 },
-            { name: "المجادلة", verses: 22 }, { name: "الحشر", verses: 24 }, { name: "الممتحنة", verses: 13 },
-            { name: "الصف", verses: 14 }, { name: "الجمعة", verses: 11 }, { name: "المنافقون", verses: 11 },
-            { name: "التغابن", verses: 18 }, { name: "الطلاق", verses: 12 }, { name: "التحريم", verses: 12 },
-            { name: "الملك", verses: 30 }, { name: "القلم", verses: 52 }, { name: "الحاقة", verses: 52 },
-            { name: "المعارج", verses: 44 }, { name: "نوح", verses: 28 }, { name: "الجن", verses: 28 },
-            { name: "المزمل", verses: 20 }, { name: "المدثر", verses: 56 }, { name: "القيامة", verses: 40 },
-            { name: "الإنسان", verses: 31 }, { name: "المرسلات", verses: 50 }, { name: "النبأ", verses: 40 },
-            { name: "النازعات", verses: 46 }, { name: "عبس", verses: 42 }, { name: "التكوير", verses: 29 },
-            { name: "الإنفطار", verses: 19 }, { name: "المطففين", verses: 36 }, { name: "الانشقاق", verses: 25 },
-            { name: "البروج", verses: 22 }, { name: "الطارق", verses: 17 }, { name: "الأعلى", verses: 19 },
-            { name: "الغاشية", verses: 26 }, { name: "الفجر", verses: 30 }, { name: "البلد", verses: 20 },
-            { name: "الشمس", verses: 15 }, { name: "الليل", verses: 21 }, { name: "الضحى", verses: 11 },
-            { name: "الشرح", verses: 8 }, { name: "التين", verses: 8 }, { name: "العلق", verses: 19 },
-            { name: "القدر", verses: 5 }, { name: "البينة", verses: 8 }, { name: "الزلزلة", verses: 8 },
-            { name: "العاديات", verses: 11 }, { name: "القارعة", verses: 11 }, { name: "التكاثر", verses: 8 },
-            { name: "العصر", verses: 3 }, { name: "الهمزة", verses: 9 }, { name: "الفيل", verses: 5 },
-            { name: "قريش", verses: 4 }, { name: "الماعون", verses: 7 }, { name: "الكوثر", verses: 3 },
-            { name: "الكافرون", verses: 6 }, { name: "النصر", verses: 3 }, { name: "المسد", verses: 5 },
-            { name: "الإخلاص", verses: 4 }, { name: "الفلق", verses: 5 }, { name: "الناس", verses: 6 }
-        ];
+        const apiHeaders = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json'
+        };
 
         let students = [];
 
         async function fetchStudents() {
             try {
-                const { data, error } = await _supabase.from('students').select('*').order('id', { ascending: false });
-                if (error) throw error;
-                students = data || [];
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=*&order=id.desc`, {
+                    headers: apiHeaders
+                });
+                if (!res.ok) throw new Error(await res.text());
+                students = await res.json();
                 renderStudents();
             } catch (err) {
-                console.error("Fetch error:", err);
-                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">خطأ: ${err.message || 'فشل الاتصال'}</p>`;
+                console.error(err);
+                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">حدث خطأ: ${err.message || 'فشل الاتصال'}</p>`;
             }
         }
 
@@ -150,13 +113,13 @@
             if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف');
 
             try {
-                const { error } = await _supabase.from('students').insert([{
-                    name, phone, haloqa, currentJuz,
-                    selectedSurah: "النبأ", fromVerse: 1, toVerse: 10,
-                    weeklyProgress: 'مستمر في خطة الحفظ والمراجعة', lastExamGrade: 'لم يختبر'
-                }]);
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students`, {
+                    method: 'POST',
+                    headers: apiHeaders,
+                    body: JSON.stringify({ name, phone, haloqa, currentJuz })
+                });
 
-                if (error) throw error;
+                if (!res.ok) throw new Error(await res.text());
 
                 document.getElementById('studentName').value = '';
                 document.getElementById('parentPhone').value = '';
@@ -167,16 +130,15 @@
             }
         }
 
-        async function updateField(id, field, value) {
-            try {
-                await _supabase.from('students').update({ [field]: value }).eq('id', id);
-            } catch(e) { console.error(e); }
-        }
-
         async function deleteStudent(id) {
-            if (confirm('هل أنت تأكد من مسح هذا الطالب نهائياً من السحابة؟')) {
-                await _supabase.from('students').delete().eq('id', id);
-                fetchStudents();
+            if (confirm('هل أنت تأكد من مسح هذا الطالب؟')) {
+                try {
+                    await fetch(`${SUPABASE_URL}/rest/v1/students?id=eq.${id}`, {
+                        method: 'DELETE',
+                        headers: apiHeaders
+                    });
+                    fetchStudents();
+                } catch(e) { alert(e.message); }
             }
         }
 
@@ -189,26 +151,22 @@
             resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث عن بيانات الطالب...</p>';
 
             try {
-                const { data, error } = await _supabase.from('students').select('*').ilike('phone', `%${phoneInput}%`);
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?phone=like.*${phoneInput}*&select=*`, {
+                    headers: apiHeaders
+                });
+                const data = await res.json();
 
-                if (error || !data || data.length === 0) {
-                    resultDiv.innerHTML = `
-                        <div class="card" style="text-align:center; color:#ef4444;">
-                            ❌ لم يتم العثور على طالب مسجل بهذا الرقم.
-                        </div>`;
+                if (!res.ok || !data || data.length === 0) {
+                    resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">❌ لم يتم العثور على طالب مسجل بهذا الرقم.</div>`;
                     return;
                 }
 
                 resultDiv.innerHTML = data.map(s => `
                     <div class="card" style="border-top: 4px solid var(--primary);">
                         <h2 style="margin:0;">👤 الطالب: ${s.name}</h2>
-                        <p style="margin:4px 0; font-size:13px; color:#4b5563;">🕌 الحلقة: <strong>${s.haloqa}</strong></p>
+                        <p style="margin:4px 0; font-size:13px; color:#4b5563;">🕌 الحلقة: <strong>${s.haloqa || 'العامة'}</strong></p>
                         <hr style="border:none; border-top:1px solid #f3f4f6; margin:8px 0;">
-                        
-                        <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentJuz}</p>
-                        <p style="margin:6px 0;">✨ <strong>حفظ اليوم:</strong> سورة ${s.selectedSurah} (من آية ${s.fromVerse} إلى ${s.toVerse})</p>
-                        <p style="margin:6px 0;">📊 <strong>التقرير الأسبوعي:</strong> ${s.weeklyProgress}</p>
-                        <p style="margin:6px 0;">🏅 <strong>آخر تقييم اختبار:</strong> <span style="color:var(--accent); font-weight:bold;">${s.lastExamGrade}</span></p>
+                        <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentJuz || 'الجزء 1'}</p>
                     </div>
                 `).join('');
             } catch(err) {
@@ -218,41 +176,21 @@
 
         function renderStudents() {
             const listContainer = document.getElementById('studentsList');
-            if (students.length === 0) {
+            if (!Array.isArray(students) || students.length === 0) {
                 listContainer.innerHTML = '<p style="text-align:center; color:#6b7280;">لا يوجد طلاب مضافون في السحابة حتى الآن</p>';
                 return;
             }
 
-            listContainer.innerHTML = students.map(s => {
-                let surahOptions = quranSurahs.map(surah => {
-                    let selected = (s.selectedSurah === surah.name) ? 'selected' : '';
-                    return `<option value="${surah.name}" ${selected}>سورة ${surah.name}</option>`;
-                }).join('');
-
-                return `
+            listContainer.innerHTML = students.map(s => `
                 <div class="student-item">
                     <div class="student-title">
                         <span>👤 ${s.name}</span>
                         <span class="badge">📱 ${s.phone}</span>
                     </div>
-
-                    <div style="background:#f9fafb; padding:8px; border-radius:8px; margin:6px 0;">
-                        <label style="font-size:11px; font-weight:bold; color:#065f46;">📖 سورة اليوم والآيات:</label>
-                        <select onchange="updateField(${s.id}, 'selectedSurah', this.value)">
-                            ${surahOptions}
-                        </select>
-                        <div class="form-row">
-                            <input type="number" placeholder="من آية" value="${s.fromVerse || 1}" onchange="updateField(${s.id}, 'fromVerse', this.value)">
-                            <input type="number" placeholder="إلى آية" value="${s.toVerse || 10}" onchange="updateField(${s.id}, 'toVerse', this.value)">
-                        </div>
-                    </div>
-
-                    <input type="text" placeholder="إنجاز الأسبوع (لتقرير ولي الأمر)" value="${s.weeklyProgress || ''}" onchange="updateField(${s.id}, 'weeklyProgress', this.value)">
-
-                    <button style="background:none; color:#ef4444; font-size:11px; padding:4px 0; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب من السحابة</button>
+                    <p style="font-size:12px; margin:4px 0;">الحلقة: ${s.haloqa || '-'} | الجزء: ${s.currentJuz || '-'}</p>
+                    <button style="background:none; color:#ef4444; font-size:11px; padding:4px 0; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
                 </div>
-                `;
-            }).join('');
+            `).join('');
         }
 
         fetchStudents();
