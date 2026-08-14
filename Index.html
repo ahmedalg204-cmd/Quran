@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة متابعة حلقات التحفيظ</title>
+    <style>
+        :root { --primary: #059669; --bg: #f3f4f6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #1f2937; }
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        h1, h2 { color: var(--primary); text-align: center; font-size: 1.2rem; }
+        input, select, button { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; }
+        .btn-wa { background: #25D366; color: white; border: none; border-radius: 6px; padding: 8px 12px; font-size: 14px; width: auto; text-decoration: none; display: inline-block; }
+        .student-item { border-bottom: 1px solid #edf2f7; padding: 12px 0; display: flex; flex-direction: column; gap: 8px; }
+        .actions { display: flex; gap: 5px; }
+        .status-btn { flex: 1; padding: 8px; font-size: 12px; }
+        .present { background: #10B981; }
+        .absent { background: #EF4444; }
+    </style>
+</head>
+<body>
+
+    <h1>🕌 منصة متابعة حلقات التحفيظ</h1>
+
+    <!-- إضافة طالب -->
+    <div class="card">
+        <h2>إضافة طالب جديد</h2>
+        <input type="text" id="studentName" placeholder="اسم الطالب">
+        <input type="tel" id="parentPhone" placeholder="رقم واتساب ولي الأمر (مثال: 2189xxxxxxx)">
+        <button onclick="addStudent()">حفظ الطالب</button>
+    </div>
+
+    <!-- قائمة الطلاب ومتابعة الحضور -->
+    <div class="card">
+        <h2>قائمة الطلاب والحضور اليومي</h2>
+        <div id="studentsList"></div>
+    </div>
+
+    <script>
+        let students = JSON.parse(localStorage.getItem('quran_students')) || [];
+
+        function saveAndRender() {
+            localStorage.setItem('quran_students', JSON.stringify(students));
+            renderStudents();
+        }
+
+        function addStudent() {
+            const name = document.getElementById('studentName').value.trim();
+            const phone = document.getElementById('parentPhone').value.trim();
+            if (!name || !phone) return alert('الرجاء إدخال الاسم ورقم الهاتف');
+            
+            students.push({ id: Date.now(), name, phone, progress: '' });
+            document.getElementById('studentName').value = '';
+            document.getElementById('parentPhone').value = '';
+            saveAndRender();
+        }
+
+        function deleteStudent(id) {
+            if (confirm('هل أنت تأكد من مسح الطالب؟')) {
+                students = students.filter(s => s.id !== id);
+                saveAndRender();
+            }
+        }
+
+        function updateProgress(id, val) {
+            const student = students.find(s => s.id === id);
+            if (student) student.progress = val;
+            localStorage.setItem('quran_students', JSON.stringify(students));
+        }
+
+        function sendWhatsApp(id, type) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+            
+            const today = new Date().toLocaleDateString('ar-LY');
+            let msg = "";
+
+            if (type === 'absent') {
+                msg = `السلام عليكم ورحمة الله، نفيدكم بأن ابنكم (${student.name}) كان غائباً اليوم بتاريخ ${today} عن حلقة التحفيظ.`;
+            } else if (type === 'present') {
+                const progText = student.progress ? `\nمقدار إنجازه اليوم: ${student.progress}` : '';
+                msg = `السلام عليكم ورحمة الله، نفيدكم بحضور ابنكم (${student.name}) اليوم بتاريخ ${today} للحلقة.${progText}`;
+            }
+
+            const url = `https://wa.me/${student.phone}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        function renderStudents() {
+            const listContainer = document.getElementById('studentsList');
+            if (students.length === 0) {
+                listContainer.innerHTML = '<p style="text-align:center; color:#6b7280;">لا يوجد طلاب مضافون حتى الآن</p>';
+                return;
+            }
+
+            listContainer.innerHTML = students.map(s => `
+                <div class="student-item">
+                    <strong>👤 ${s.name}</strong>
+                    <input type="text" placeholder="التقدم (مثال: حفظ سورة النبأ)" value="${s.progress || ''}" onchange="updateProgress(${s.id}, this.value)">
+                    <div class="actions">
+                        <button class="status-btn present" onclick="sendWhatsApp(${s.id}, 'present')">حاضر + واتساب 💬</button>
+                        <button class="status-btn absent" onclick="sendWhatsApp(${s.id}, 'absent')">غائب + واتساب 💬</button>
+                    </div>
+                    <button style="background:none; color:#ef4444; font-size:12px; padding:2px; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
+                </div>
+            `).join('');
+        }
+
+        renderStudents();
+    </script>
+</body>
+</html>
