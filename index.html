@@ -72,8 +72,9 @@
     </div>
 
     <script>
+        // تأكد من جلب الـ URL و Key الصحيحين من Supabase (Project Settings -> API)
         const SUPABASE_URL = "https://lqhtharryzdanqfeqsa.supabase.co";
-        const SUPABASE_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
+        const SUPABASE_KEY = "ضع_هنا_مفتاح_anon_public_الخاص_بمشروعك";
 
         const headers = {
             'apikey': SUPABASE_KEY,
@@ -133,7 +134,7 @@
                 renderStudents();
             } catch (err) {
                 console.error("Fetch error:", err);
-                document.getElementById('studentsList').innerHTML = '<p style="color:red; text-align:center;">حدث خطأ في تحميل البيانات</p>';
+                document.getElementById('studentsList').innerHTML = '<p style="color:red; text-align:center;">حدث خطأ في تحميل البيانات (تأكد من الـ API Key)</p>';
             }
         }
 
