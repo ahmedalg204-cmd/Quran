@@ -5,29 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية</title>
     <style>
-        :root { --primary: #065f46; --secondary: #047857; --accent: #f59e0b; --bg: #f3f4f6; }
+        :root { --primary: #065f46; --secondary: #047857; --accent: #d97706; --bg: #f3f4f6; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 20px 15px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .header h1 { margin: 0; font-size: 1.25rem; font-weight: bold; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 20px 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 15px; }
+        .header h1 { margin: 0; font-size: 1.3rem; font-weight: bold; }
         .header p { margin: 5px 0 0; font-size: 0.85rem; opacity: 0.9; }
-        .card { background: white; border-radius: 14px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card { background: white; border-radius: 14px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .card h2 { color: var(--primary); margin-top: 0; font-size: 1.05rem; border-bottom: 2px solid #ecfdf5; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; text-align: center; }
-        .stat-card { background: #ecfdf5; padding: 10px; border-radius: 10px; border: 1px solid #a7f3d0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; text-align: center; }
+        .stat-card { background: #ecfdf5; padding: 10px 5px; border-radius: 10px; border: 1px solid #a7f3d0; }
         .stat-card div { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-        .stat-card span { font-size: 0.75rem; color: #047857; }
-        input, select, button, textarea { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        .stat-card span { font-size: 0.7rem; color: #047857; }
+        input, select, button, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
         button { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; }
-        .student-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
-        .student-title { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #111827; }
-        .badge { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: normal; }
-        .actions { display: flex; gap: 6px; margin-top: 8px; }
-        .status-btn { flex: 1; padding: 8px; font-size: 13px; border-radius: 6px; border: none; color: white; font-weight: bold; }
+        .student-item { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; margin-bottom: 12px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .student-title { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #111827; margin-bottom: 6px; }
+        .badge { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; }
+        .form-row { display: flex; gap: 6px; }
+        .actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px; }
+        .status-btn { padding: 8px; font-size: 12px; border-radius: 6px; border: none; color: white; font-weight: bold; }
         .present { background: #10B981; }
         .absent { background: #EF4444; }
         .weekly-btn { background: #8B5CF6; }
-        .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; background: #e5e7eb; color: #374151; font-size: 14px; border-radius: 8px; text-align: center; }
+        .exam-btn { background: var(--accent); }
+        .nav-tabs { display: flex; gap: 6px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: #e5e7eb; color: #374151; font-size: 13px; border-radius: 8px; text-align: center; border: none; font-weight: bold; }
         .tab-btn.active { background: var(--primary); color: white; }
     </style>
 </head>
@@ -41,52 +43,69 @@
 
     <!-- تبويبات التنقل -->
     <div class="nav-tabs">
-        <button class="tab-btn active" id="tabMainBtn" onclick="switchTab('main')">إدارة الحضور</button>
-        <button class="tab-btn" id="tabOwnerBtn" onclick="switchTab('owner')">📊 لوحة المشرف (الأونر)</button>
+        <button class="tab-btn active" id="tabMainBtn" onclick="switchTab('main')">إدارة الحضور والتحفيظ</button>
+        <button class="tab-btn" id="tabOwnerBtn" onclick="switchTab('owner')">📊 لوحة المشرف العام</button>
     </div>
 
-    <!-- واجهة إدارة الحضور اليومي والتقدم -->
+    <!-- واجهة إدارة الحضور والتحفيظ -->
     <div id="tabMain">
         <!-- إضافة طالب جديد -->
         <div class="card">
             <h2>➕ تسجيل طالب جديد</h2>
             <input type="text" id="studentName" placeholder="اسم الطالب الثلاثي">
             <input type="tel" id="parentPhone" placeholder="رقم واتساب ولي الأمر (مثال: 2189xxxxxxx)">
-            <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: حلقة الإمام نافع)">
-            <button onclick="addStudent()">حفظ الطالب</button>
+            <div class="form-row">
+                <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: حلقة الشاطبي)">
+                <select id="startJuz">
+                    <option value="">-- اختر جزء البداية --</option>
+                    <script>
+                        for(let i=1; i<=30; i++) {
+                            document.write(`<option value="الجزء ${i}">الجزء ${i}</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
+            <button onclick="addStudent()">حفظ الطالب في المركز</button>
         </div>
 
         <!-- قائمة الطلاب -->
         <div class="card">
-            <h2>👥 قائمة الطلاب والتحضير اليومي</h2>
+            <h2>👥 قائمة الطلاب ومتابعة الحفظ</h2>
             <div id="studentsList"></div>
         </div>
     </div>
 
-    <!-- واجهة المشرف (الأونر) والتقارير الأسبوعية -->
+    <!-- واجهة المشرف العام (الأونر) -->
     <div id="tabOwner" style="display: none;">
         <!-- الإحصائيات العامة -->
         <div class="card">
-            <h2>📊 إحصائيات المركز الشاملة</h2>
+            <h2>📊 إحصائيات المركز</h2>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div id="totalStudentsCount">0</div>
                     <span>إجمالي الطلاب</span>
                 </div>
                 <div class="stat-card">
-                    <div id="todayPresentCount">0</div>
-                    <span>حضور اليوم</span>
+                    <div id="totalHalaqatCount">0</div>
+                    <span>عدد الحلقات</span>
                 </div>
                 <div class="stat-card">
-                    <div id="todayAbsentCount">0</div>
-                    <span>غياب اليوم</span>
+                    <div id="todayLogsCount">0</div>
+                    <span>عمليات اليوم</span>
                 </div>
             </div>
         </div>
 
-        <!-- سجلات الحضور والغياب -->
+        <!-- أداة النسخ الاحتياطي وتصدير البيانات -->
         <div class="card">
-            <h2>📜 سجل نشاط التقدم الأسبوعي والتقرير</h2>
+            <h2>⚙️ إدارة البيانات والنسخ الاحتياطي</h2>
+            <button onclick="exportData()" style="background: #2563eb; margin-bottom: 8px;">📥 تصدير نسختك الاحتياطية (تنزيل ملف البيانات)</button>
+            <button onclick="window.print()" style="background: #4b5563;">🖨️ طباعة تقرير المركز العام</button>
+        </div>
+
+        <!-- سجل الأحداث السابقة -->
+        <div class="card">
+            <h2>📜 سجل العمليات والأنشطة اليومية</h2>
             <div id="ownerWeeklyLogs"></div>
         </div>
     </div>
@@ -114,6 +133,7 @@
             const name = document.getElementById('studentName').value.trim();
             const phone = document.getElementById('parentPhone').value.trim();
             const haloqa = document.getElementById('haloqaName').value.trim() || 'الحلقة العامة';
+            const juz = document.getElementById('startJuz').value || 'الجزء 1';
 
             if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف بشكل صحيح');
 
@@ -122,8 +142,10 @@
                 name,
                 phone,
                 haloqa,
+                currentJuz: juz,
                 todayProgress: '',
-                weeklyProgress: ''
+                weeklyProgress: '',
+                lastExamGrade: 'لم يختبر'
             });
 
             document.getElementById('studentName').value = '';
@@ -133,7 +155,7 @@
         }
 
         function deleteStudent(id) {
-            if (confirm('هل أنت تأكد من مسح بيانات الطالب نهائياً؟')) {
+            if (confirm('هل أنت تأكد من مسح كافة بيانات هذا الطالب نهائياً؟')) {
                 students = students.filter(s => s.id !== id);
                 saveAndRender();
             }
@@ -156,14 +178,17 @@
 
             if (type === 'absent') {
                 msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بأن ابنكم الطالب: *${student.name}*\nكان *غائباً* اليوم (${today}) عن الحلقة.`;
-                logs.push({ time: today, text: `تسجيل غياب للطفل ${student.name}` });
+                logs.push({ time: today, text: `تسجيل غياب الطالب: ${student.name}` });
             } else if (type === 'present') {
                 const progText = student.todayProgress ? `\nمقدار حفظ اليوم: ${student.todayProgress}` : '';
-                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بحضور ابنكم الطالب: *${student.name}*\nاليوم (${today}).${progText}\nبارك الله في جهوده.`;
-                logs.push({ time: today, text: `تسجيل حضور للطفل ${student.name}` });
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بحضور ابنكم الطالب: *${student.name}*\nالحلقة: *${student.haloqa}*\nالجزء الحالي: *${student.currentJuz}*${progText}\nبارك الله في جهوده.`;
+                logs.push({ time: today, text: `تسجيل حضور الطالب: ${student.name}` });
             } else if (type === 'weekly') {
-                const weekProg = student.weeklyProgress || 'مستمر في خطة الحفظ والمراجعة المقررة';
-                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n📊 *التقرير الأسبوعي لمستوى الطالب*\nالاسم: *${student.name}*\nالحلقة: *${student.haloqa}*\n\nملخص الانجاز والتفوق هذا الأسبوع:\n${weekProg}\n\nشاكرين حرصكم ومتابعتكم الكريمة.`;
+                const weekProg = student.weeklyProgress || 'مستمر في برنامج الحفظ والمراجعة المقرر';
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n📊 *التقرير الأسبوعي لمستوى الطالب*\nالاسم: *${student.name}*\nالحلقة: *${student.haloqa}*\nالجزء الحالي: *${student.currentJuz}*\n\nملخص حفظ ومراجعة هذا الأسبوع:\n${weekProg}\n\nشاكرين اهتمامكم ومتابعتكم المستمرة.`;
+            } else if (type === 'exam') {
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n⭐ *نتيجة اختبار القرآن الكريم*\nالطالب: *${student.name}*\nالجزء المنسوب: *${student.currentJuz}*\nالتقييم: *${student.lastExamGrade}*\n\nنسأل الله أن يجعله من أهل القرآن والخاطبين به.`;
+                logs.push({ time: today, text: `تسجيل اختبار للطالب ${student.name} بتقدير (${student.lastExamGrade})` });
             }
 
             saveAndRender();
@@ -178,38 +203,76 @@
                 return;
             }
 
-            listContainer.innerHTML = students.map(s => `
+            listContainer.innerHTML = students.map(s => {
+                let juzOptions = '';
+                for(let i=1; i<=30; i++) {
+                    let juzVal = `الجزء ${i}`;
+                    let selected = (s.currentJuz === juzVal) ? 'selected' : '';
+                    juzOptions += `<option value="${juzVal}" ${selected}>${juzVal}</option>`;
+                }
+
+                return `
                 <div class="student-item">
                     <div class="student-title">
                         <span>👤 ${s.name}</span>
                         <span class="badge">${s.haloqa}</span>
                     </div>
-                    <input type="text" placeholder="حفظ اليوم (مثال: حفظ سورة النبأ)" value="${s.todayProgress || ''}" onchange="updateField(${s.id}, 'todayProgress', this.value)">
-                    <input type="text" placeholder="التقدم الأسبوعي (لتقرير نهاية الأسبوع)" value="${s.weeklyProgress || ''}" onchange="updateField(${s.id}, 'weeklyProgress', this.value)">
-                    
+
+                    <div class="form-row">
+                        <select onchange="updateField(${s.id}, 'currentJuz', this.value)">
+                            ${juzOptions}
+                        </select>
+                        <select onchange="updateField(${s.id}, 'lastExamGrade', this.value)">
+                            <option value="لم يختبر" ${s.lastExamGrade==='لم يختبر'?'selected':''}>-- نتيجة الاختبار --</option>
+                            <option value="ممتاز (100%)" ${s.lastExamGrade==='ممتاز (100%)'?'selected':''}>ممتاز</option>
+                            <option value="جيد جداً" ${s.lastExamGrade==='جيد جداً'?'selected':''}>جيد جداً</option>
+                            <option value="جيد" ${s.lastExamGrade==='جيد'?'selected':''}>جيد</option>
+                            <option value="يحتاج مراجعة" ${s.lastExamGrade==='يحتاج مراجعة'?'selected':''}>يحتاج مراجعة</option>
+                        </select>
+                    </div>
+
+                    <input type="text" placeholder="حفظ اليوم (مثال: سورة البقرة من آية 1 إلى 20)" value="${s.todayProgress || ''}" onchange="updateField(${s.id}, 'todayProgress', this.value)">
+                    <input type="text" placeholder="إنجاز الأسبوع (ملخص تقرير ولي الأمر)" value="${s.weeklyProgress || ''}" onchange="updateField(${s.id}, 'weeklyProgress', this.value)">
+
                     <div class="actions">
                         <button class="status-btn present" onclick="sendWhatsApp(${s.id}, 'present')">حاضر 💬</button>
                         <button class="status-btn absent" onclick="sendWhatsApp(${s.id}, 'absent')">غائب 💬</button>
                         <button class="status-btn weekly-btn" onclick="sendWhatsApp(${s.id}, 'weekly')">تقرير أسبوعي 📊</button>
+                        <button class="status-btn exam-btn" onclick="sendWhatsApp(${s.id}, 'exam')">إرسال النتيجة 🏅</button>
                     </div>
                     <button style="background:none; color:#ef4444; font-size:11px; padding:4px 0; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function renderOwnerDashboard() {
             document.getElementById('totalStudentsCount').innerText = students.length;
             
+            const halaqat = [...new Set(students.map(s => s.haloqa))];
+            document.getElementById('totalHalaqatCount').innerText = halaqat.length;
+            document.getElementById('todayLogsCount').innerText = logs.length;
+
             const logsContainer = document.getElementById('ownerWeeklyLogs');
             if (logs.length === 0) {
                 logsContainer.innerHTML = '<p style="text-align:center; color:#6b7280; font-size:13px;">لا توجد سجلات حديثة</p>';
             } else {
-                logsContainer.innerHTML = logs.slice(-10).reverse().map(l => `
+                logsContainer.innerHTML = logs.slice(-15).reverse().map(l => `
                     <div style="font-size:12px; padding:6px 0; border-bottom:1px solid #f3f4f6;">
                         <span style="color:#6b7280;">[${l.time}]</span> ${l.text}
                     </div>
                 `).join('');
             }
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(students, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `um_alqura_backup_${new Date().toLocaleDateString('ar-LY')}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
         }
 
         renderStudents();
