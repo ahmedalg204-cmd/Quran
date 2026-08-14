@@ -70,15 +70,34 @@
     </div>
 
     <script>
+        const API_URL = '/api/students';
         let students = [];
 
         async function fetchStudents() {
             try {
-                const res = await fetch('/api/students');
-                if(!res.ok) throw new Error('فشل جلب البيانات');
+                const res = await fetch(API_URL);
+                if(!res.ok) {
+                    // إذا فشل الـ API الخاص بـ Vercel يجرب الاتصال المباشر لضمان العمل
+                    return fetchDirectly();
+                }
                 students = await res.json();
                 renderStudents();
             } catch (err) {
+                fetchDirectly();
+            }
+        }
+
+        async function fetchDirectly() {
+            try {
+                const res = await fetch("https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students?select=*&order=id.desc", {
+                    headers: {
+                        'apikey': "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw",
+                        'Authorization': "Bearer EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw"
+                    }
+                });
+                students = await res.json();
+                renderStudents();
+            } catch (e) {
                 document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">حدث خطأ في تحميل البيانات</p>`;
             }
         }
@@ -96,32 +115,44 @@
             const haloqa = document.getElementById('haloqaName').value.trim() || 'الحلقة العامة';
             const currentJuz = document.getElementById('startJuz').value || 'الجزء 1';
 
-            if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف');
+            if (!name || !phone) return alert('يرجى إدخل اسم الطالب ورقم الهاتف');
 
             try {
-                const res = await fetch('/api/students', {
+                let res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, phone, haloqa, currentJuz })
                 });
 
-                if(!res.ok) throw new Error('حدث خطأ أثناء الحفظ');
+                if(!res.ok) {
+                    // محاولة حفظ مباشرة
+                    res = await fetch("https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students", {
+                        method: 'POST',
+                        headers: {
+                            'apikey': "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw",
+                            'Authorization': "Bearer EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw",
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify({ name, phone, haloqa, currentJuz })
+                    });
+                }
 
                 document.getElementById('studentName').value = '';
                 document.getElementById('parentPhone').value = '';
                 document.getElementById('haloqaName').value = '';
                 fetchStudents();
             } catch(err) {
-                alert(err.message);
+                alert('فشل الحفظ، تحقق من الاتصال');
             }
         }
 
         async function deleteStudent(id) {
             if (confirm('هل أنت تأكد من مسح هذا الطالب؟')) {
                 try {
-                    await fetch(`/api/students?id=${id}`, { method: 'DELETE' });
+                    await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
                     fetchStudents();
-                } catch(e) { alert('فشل الحذف'); }
+                } catch(e) { fetchStudents(); }
             }
         }
 
@@ -134,10 +165,15 @@
             resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث عن بيانات الطالب...</p>';
 
             try {
-                const res = await fetch(`/api/students?phone=${encodeURIComponent(phoneInput)}`);
+                const res = await fetch(`https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students?phone=ilike.*${phoneInput}*&select=*`, {
+                    headers: {
+                        'apikey': "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw",
+                        'Authorization': "Bearer EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw"
+                    }
+                });
                 const data = await res.json();
 
-                if (!res.ok || !Array.isArray(data) || data.length === 0) {
+                if (!Array.isArray(data) || data.length === 0) {
                     resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">❌ لم يتم العثور على طالب مسجل بهذا الرقم.</div>`;
                     return;
                 }
@@ -158,7 +194,7 @@
         function renderStudents() {
             const listContainer = document.getElementById('studentsList');
             if (!Array.isArray(students) || students.length === 0) {
-                listContainer.innerHTML = '<p style="text-align:center; color:#6b7280;">لا يوجد طلاب مضافون في السحابة حتى الآن</p>';
+                listContainer.innerHTML = '<p style="text-align:center; color:#6b7280;">لا يوجد طلاب مضافون حتى الآن</p>';
                 return;
             }
 
