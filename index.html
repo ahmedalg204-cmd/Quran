@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية</title>
-    <!-- مكتبة Supabase للربط السحابي -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- مكتبة Supabase المحدثة -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
         :root { --primary: #065f46; --secondary: #047857; --accent: #d97706; --bg: #f3f4f6; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
@@ -44,7 +44,7 @@
             <input type="text" id="studentName" placeholder="اسم الطالب الثلاثي">
             <input type="tel" id="parentPhone" placeholder="رقم هاتف ولي الأمر (مثال: 091xxxxxxx)">
             <div class="form-row">
-                <input type="text" id="haloqaName" placeholder="اسم الحلقة">
+                <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: قالون)">
                 <select id="startJuz">
                     <option value="الجزء 1">الجزء 1</option>
                     <script>
@@ -74,11 +74,16 @@
     </div>
 
     <script>
-        // إعدادات الربط السحابي المحدثة ببيانات مشروعك
         const SUPABASE_URL = "https://lqhtharryzdanqfeqsa.supabase.co";
         const SUPABASE_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
         
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // إعداد الاتصال الآمن مع معالجة الأخطاء
+        let _supabase;
+        try {
+            _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error("فشل تهيئة Supabase:", e);
+        }
 
         const quranSurahs = [
             { name: "الفاتحة", verses: 7 }, { name: "البقرة", verses: 286 }, { name: "آل عمران", verses: 200 },
@@ -124,13 +129,14 @@
         let students = [];
 
         async function fetchStudents() {
-            const { data, error } = await _supabase.from('students').select('*').order('id', { ascending: false });
-            if (error) {
-                console.error(error);
-                document.getElementById('studentsList').innerHTML = '<p style="color:red; text-align:center;">حدث خطأ أثناء تحميل البيانات</p>';
-            } else {
+            try {
+                const { data, error } = await _supabase.from('students').select('*').order('id', { ascending: false });
+                if (error) throw error;
                 students = data || [];
                 renderStudents();
+            } catch (err) {
+                console.error("Fetch error:", err);
+                document.getElementById('studentsList').innerHTML = '<p style="color:red; text-align:center;">حدث خطأ أثناء تحميل البيانات (يرجى التأكد من اتصال الإنترنت)</p>';
             }
         }
 
@@ -149,24 +155,28 @@
 
             if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف');
 
-            const { error } = await _supabase.from('students').insert([{
-                name, phone, haloqa, currentJuz,
-                selectedSurah: "النبأ", fromVerse: 1, toVerse: 10,
-                weeklyProgress: 'مستمر في خطة الحفظ والمراجعة', lastExamGrade: 'لم يختبر'
-            }]);
+            try {
+                const { error } = await _supabase.from('students').insert([{
+                    name, phone, haloqa, currentJuz,
+                    selectedSurah: "النبأ", fromVerse: 1, toVerse: 10,
+                    weeklyProgress: 'مستمر في خطة الحفظ والمراجعة', lastExamGrade: 'لم يختبر'
+                }]);
 
-            if (error) {
-                alert('حدث خطأ أثناء الحفظ: ' + error.message);
-            } else {
+                if (error) throw error;
+
                 document.getElementById('studentName').value = '';
                 document.getElementById('parentPhone').value = '';
                 document.getElementById('haloqaName').value = '';
                 fetchStudents();
+            } catch (err) {
+                alert('حدث خطأ أثناء الحفظ: ' + (err.message || 'فشل الاتصال'));
             }
         }
 
         async function updateField(id, field, value) {
-            await _supabase.from('students').update({ [field]: value }).eq('id', id);
+            try {
+                await _supabase.from('students').update({ [field]: value }).eq('id', id);
+            } catch(e) { console.error(e); }
         }
 
         async function deleteStudent(id) {
@@ -184,28 +194,32 @@
 
             resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث عن بيانات الطالب...</p>';
 
-            const { data, error } = await _supabase.from('students').select('*').like('phone', `%${phoneInput}%`);
+            try {
+                const { data, error } = await _supabase.from('students').select('*').like('phone', `%${phoneInput}%`);
 
-            if (error || !data || data.length === 0) {
-                resultDiv.innerHTML = `
-                    <div class="card" style="text-align:center; color:#ef4444;">
-                        ❌ لم يتم العثور على طالب مسجل بهذا الرقم.
-                    </div>`;
-                return;
+                if (error || !data || data.length === 0) {
+                    resultDiv.innerHTML = `
+                        <div class="card" style="text-align:center; color:#ef4444;">
+                            ❌ لم يتم العثور على طالب مسجل بهذا الرقم.
+                        </div>`;
+                    return;
+                }
+
+                resultDiv.innerHTML = data.map(s => `
+                    <div class="card" style="border-top: 4px solid var(--primary);">
+                        <h2 style="margin:0;">👤 الطالب: ${s.name}</h2>
+                        <p style="margin:4px 0; font-size:13px; color:#4b5563;">🕌 الحلقة: <strong>${s.haloqa}</strong></p>
+                        <hr style="border:none; border-top:1px solid #f3f4f6; margin:8px 0;">
+                        
+                        <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentJuz}</p>
+                        <p style="margin:6px 0;">✨ <strong>حفظ اليوم:</strong> سورة ${s.selectedSurah} (من آية ${s.fromVerse} إلى ${s.toVerse})</p>
+                        <p style="margin:6px 0;">📊 <strong>التقرير الأسبوعي:</strong> ${s.weeklyProgress}</p>
+                        <p style="margin:6px 0;">🏅 <strong>آخر تقييم اختبار:</strong> <span style="color:var(--accent); font-weight:bold;">${s.lastExamGrade}</span></p>
+                    </div>
+                `).join('');
+            } catch(err) {
+                resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">حدث خطأ في الاتصال</div>`;
             }
-
-            resultDiv.innerHTML = data.map(s => `
-                <div class="card" style="border-top: 4px solid var(--primary);">
-                    <h2 style="margin:0;">👤 الطالب: ${s.name}</h2>
-                    <p style="margin:4px 0; font-size:13px; color:#4b5563;">🕌 الحلقة: <strong>${s.haloqa}</strong></p>
-                    <hr style="border:none; border-top:1px solid #f3f4f6; margin:8px 0;">
-                    
-                    <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentJuz}</p>
-                    <p style="margin:6px 0;">✨ <strong>حفظ اليوم:</strong> سورة ${s.selectedSurah} (من آية ${s.fromVerse} إلى ${s.toVerse})</p>
-                    <p style="margin:6px 0;">📊 <strong>التقرير الأسبوعي:</strong> ${s.weeklyProgress}</p>
-                    <p style="margin:6px 0;">🏅 <strong>آخر تقييم اختبار:</strong> <span style="color:var(--accent); font-weight:bold;">${s.lastExamGrade}</span></p>
-                </div>
-            `).join('');
         }
 
         function renderStudents() {
