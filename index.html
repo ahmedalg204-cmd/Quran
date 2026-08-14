@@ -3,186 +3,1022 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية</title>
+
     <style>
-        :root { --primary: #065f46; --secondary: #047857; --bg: #f3f4f6; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 18px 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 15px; }
-        .header h1 { margin: 0; font-size: 1.3rem; font-weight: bold; }
-        .header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.9; }
-        .card { background: white; border-radius: 14px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card h2 { color: var(--primary); margin-top: 0; font-size: 1.05rem; border-bottom: 2px solid #ecfdf5; padding-bottom: 8px; }
-        input, select, button { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        button { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; }
-        .student-item { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; margin-bottom: 12px; background: #ffffff; }
-        .student-title { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #111827; }
-        .badge { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; }
-        .form-row { display: flex; gap: 6px; }
-        .nav-tabs { display: flex; gap: 6px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; background: #e5e7eb; color: #374151; font-size: 12px; border-radius: 8px; text-align: center; border: none; font-weight: bold; }
-        .tab-btn.active { background: var(--primary); color: white; }
+        :root {
+            --primary: #065f46;
+            --secondary: #047857;
+            --bg: #f3f4f6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 12px;
+            color: #1f2937;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 16px;
+            padding: 18px 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin: 4px 0 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.05rem;
+            border-bottom: 2px solid #ecfdf5;
+            padding-bottom: 8px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 4px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .student-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #ffffff;
+        }
+
+        .student-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #111827;
+            gap: 8px;
+        }
+
+        .badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: #e5e7eb;
+            color: #374151;
+            font-size: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: none;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+            direction: ltr;
+            text-align: left;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            color: #166534;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            padding: 15px;
+        }
     </style>
 </head>
+
 <body>
 
+    <!-- HEADER -->
     <div class="header">
         <h1>🕌 مركز أم القرى</h1>
         <p>لتحفيظ القرآن الكريم والسنة النبوية</p>
     </div>
 
+    <!-- TABS -->
     <div class="nav-tabs">
-        <button class="tab-btn active" id="tabMainBtn" onclick="switchTab('main')">إدارة المركز (المعلم)</button>
-        <button class="tab-btn" id="tabParentBtn" onclick="switchTab('parent')">👨‍👩‍👦 بوابة ولي الأمر</button>
+        <button
+            class="tab-btn active"
+            id="tabMainBtn"
+            onclick="switchTab('main')">
+            إدارة المركز (المعلم)
+        </button>
+
+        <button
+            class="tab-btn"
+            id="tabParentBtn"
+            onclick="switchTab('parent')">
+            👨‍👩‍👦 بوابة ولي الأمر
+        </button>
     </div>
+
+    <!-- ========================= -->
+    <!-- MAIN / TEACHER -->
+    <!-- ========================= -->
 
     <div id="tabMain">
+
+        <!-- ADD STUDENT -->
         <div class="card">
+
             <h2>➕ تسجيل طالب جديد</h2>
-            <input type="text" id="studentName" placeholder="اسم الطالب الثلاثي">
-            <input type="tel" id="parentPhone" placeholder="رقم هاتف ولي الأمر (مثال: 091xxxxxxx)">
+
+            <input
+                type="text"
+                id="studentName"
+                placeholder="اسم الطالب الثلاثي">
+
+            <input
+                type="tel"
+                id="parentPhone"
+                placeholder="رقم هاتف ولي الأمر (مثال: 091xxxxxxx)">
+
             <div class="form-row">
-                <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: قالون)">
+
+                <input
+                    type="text"
+                    id="haloqaName"
+                    placeholder="اسم الحلقة (مثال: قالون)">
+
                 <select id="startJuz">
-                    <option value="الجزء 1">الجزء 1</option>
+
+                    <option value="الجزء 1">
+                        الجزء 1
+                    </option>
+
                     <script>
-                        for(let i=2; i<=30; i++) document.write(`<option value="الجزء ${i}">الجزء ${i}</option>`);
+                        for (let i = 2; i <= 30; i++) {
+                            document.write(
+                                `<option value="الجزء ${i}">الجزء ${i}</option>`
+                            );
+                        }
                     </script>
+
                 </select>
+
             </div>
-            <button onclick="addStudent()">حفظ الطالب في السحابة ☁️</button>
+
+            <button onclick="addStudent()">
+                حفظ الطالب في السحابة ☁️
+            </button>
+
+            <div id="addMessage"></div>
+
         </div>
 
+
+        <!-- STUDENTS -->
         <div class="card">
+
             <h2>👥 قائمة الطلاب والتحضير السحابي</h2>
-            <div id="studentsList">جاري تحميل البيانات...</div>
+
+            <div id="studentsList">
+                <div class="loading">
+                    جاري الاتصال بالسحابة...
+                </div>
+            </div>
+
         </div>
+
     </div>
 
-    <div id="tabParent" style="display: none;">
+
+    <!-- ========================= -->
+    <!-- PARENT -->
+    <!-- ========================= -->
+
+    <div id="tabParent" style="display:none;">
+
         <div class="card">
+
             <h2>🔑 تسجيل دخول ولي الأمر</h2>
-            <p style="font-size: 12px; color: #6b7280;">أدخل رقم الهاتف المسجل للاطلاع على تقرير الطالب المحدث أونلاين:</p>
-            <input type="tel" id="loginPhone" placeholder="أدخل رقم الهاتف (مثال: 091xxxxxxx)">
-            <button onclick="searchParentStudent()" style="background: #2563eb;">عرض تقرير الطالب 📡</button>
+
+            <p style="font-size:12px;color:#6b7280;">
+                أدخل رقم الهاتف المسجل للاطلاع على تقرير الطالب المحدث أونلاين:
+            </p>
+
+            <input
+                type="tel"
+                id="loginPhone"
+                placeholder="أدخل رقم الهاتف (مثال: 091xxxxxxx)">
+
+            <button
+                onclick="searchParentStudent()"
+                style="background:#2563eb;">
+                عرض تقرير الطالب 📡
+            </button>
+
         </div>
 
         <div id="parentResult"></div>
+
     </div>
 
+
+    <!-- ========================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================= -->
+
     <script>
-        const API_URL = "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
-        const API_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
+
+        /*
+        ==========================================
+        SUPABASE SETTINGS
+        ==========================================
+        */
+
+        const API_URL =
+            "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
+
+        const API_KEY =
+            "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
+
+
+        /*
+        ==========================================
+        HEADERS
+        ==========================================
+        */
 
         const headers = {
-            'apikey': API_KEY,
-            'Authorization': 'Bearer ' + API_KEY,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
+            "apikey": API_KEY,
+            "Authorization": "Bearer " + API_KEY,
+            "Content-Type": "application/json"
         };
 
-        async function fetchStudents() {
-            try {
-                const res = await fetch(`${API_URL}?select=*&order=id.desc`, { headers });
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                renderStudents(data);
-            } catch (err) {
-                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">تعذر الاتصال بالسحابة، يرجى تشغيل أمر SQL أعلاه</p>`;
-            }
-        }
+
+        /*
+        ==========================================
+        SWITCH TABS
+        ==========================================
+        */
 
         function switchTab(tab) {
-            document.getElementById('tabMain').style.display = tab === 'main' ? 'block' : 'none';
-            document.getElementById('tabParent').style.display = tab === 'parent' ? 'block' : 'none';
-            document.getElementById('tabMainBtn').classList.toggle('active', tab === 'main');
-            document.getElementById('tabParentBtn').classList.toggle('active', tab === 'parent');
+
+            document.getElementById("tabMain").style.display =
+                tab === "main" ? "block" : "none";
+
+            document.getElementById("tabParent").style.display =
+                tab === "parent" ? "block" : "none";
+
+            document.getElementById("tabMainBtn")
+                .classList.toggle("active", tab === "main");
+
+            document.getElementById("tabParentBtn")
+                .classList.toggle("active", tab === "parent");
         }
 
-        async function addStudent() {
-            const name = document.getElementById('studentName').value.trim();
-            const phone = document.getElementById('parentPhone').value.trim();
-            const haloqa = document.getElementById('haloqaName').value.trim() || 'الحلقة العامة';
-            const currentjuz = document.getElementById('startJuz').value || 'الجزء 1';
 
-            if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف');
+        /*
+        ==========================================
+        FETCH STUDENTS
+        ==========================================
+        */
+
+        async function fetchStudents() {
+
+            const list =
+                document.getElementById("studentsList");
 
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({ name, phone, haloqa, currentjuz })
-                });
 
-                if (!res.ok) throw new Error();
+                list.innerHTML = `
+                    <div class="loading">
+                        جاري الاتصال بالسحابة...
+                    </div>
+                `;
 
-                document.getElementById('studentName').value = '';
-                document.getElementById('parentPhone').value = '';
-                document.getElementById('haloqaName').value = '';
-                fetchStudents();
-            } catch (err) {
-                alert('فشل حفظ البيانات في السحابة، تأكد من تنفيذ أمر SQL');
-            }
-        }
+                const res = await fetch(
+                    `${API_URL}?select=*&order=id.desc`,
+                    {
+                        method: "GET",
+                        headers: headers
+                    }
+                );
 
-        async function deleteStudent(id) {
-            if (confirm('هل أنت تأكد من مسح هذا الطالب؟')) {
-                try {
-                    await fetch(`${API_URL}?id=eq.${id}`, { method: 'DELETE', headers });
-                    fetchStudents();
-                } catch(e) { fetchStudents(); }
-            }
-        }
 
-        async function searchParentStudent() {
-            const phoneInput = document.getElementById('loginPhone').value.trim();
-            const resultDiv = document.getElementById('parentResult');
+                /*
+                قراءة الرد حتى لو كان Error
+                */
 
-            if (!phoneInput) return alert('يرجى إدخال رقم الهاتف');
+                const responseText =
+                    await res.text();
 
-            resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث أونلاين...</p>';
 
-            try {
-                const res = await fetch(`${API_URL}?phone=ilike.*${encodeURIComponent(phoneInput)}*&select=*`, { headers });
-                const data = await res.json();
+                /*
+                عرض التفاصيل في Console
+                */
 
-                if (!Array.isArray(data) || data.length === 0) {
-                    resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">❌ لم يتم العثور على طالب بهذا الرقم.</div>`;
-                    return;
+                console.log(
+                    "Supabase Status:",
+                    res.status
+                );
+
+                console.log(
+                    "Supabase Response:",
+                    responseText
+                );
+
+
+                /*
+                إذا كان هناك خطأ
+                */
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        `HTTP ${res.status}: ${responseText}`
+                    );
+
                 }
 
-                resultDiv.innerHTML = data.map(s => `
-                    <div class="card" style="border-top: 4px solid var(--primary);">
-                        <h2 style="margin:0;">👤 الطالب: ${s.name}</h2>
-                        <p style="margin:4px 0; font-size:13px; color:#4b5563;">🕌 الحلقة: <strong>${s.haloqa || 'العامة'}</strong></p>
-                        <hr style="border:none; border-top:1px solid #f3f4f6; margin:8px 0;">
-                        <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentjuz || 'الجزء 1'}</p>
+
+                /*
+                تحويل البيانات إلى JSON
+                */
+
+                const data =
+                    JSON.parse(responseText);
+
+
+                renderStudents(data);
+
+
+            } catch (err) {
+
+                console.error(
+                    "SUPABASE ERROR:",
+                    err
+                );
+
+
+                list.innerHTML = `
+
+                    <div class="error-box">
+
+                        <strong>
+                            ❌ Supabase Error
+                        </strong>
+
+                        <br><br>
+
+                        ${escapeHTML(err.message)}
+
+                        <br><br>
+
+                        <strong>
+                            افتح Console في المتصفح لمعرفة التفاصيل.
+                        </strong>
+
                     </div>
-                `).join('');
-            } catch(err) {
-                resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">خطأ في الاتصال</div>`;
+
+                `;
             }
         }
 
-        function renderStudents(students) {
-            const listContainer = document.getElementById('studentsList');
-            if (!Array.isArray(students) || students.length === 0) {
-                listContainer.innerHTML = '<p style="text-align:center; color:#6b7280;">لا يوجد طلاب مضافون حتى الآن</p>';
+
+        /*
+        ==========================================
+        ADD STUDENT
+        ==========================================
+        */
+
+        async function addStudent() {
+
+            const name =
+                document.getElementById("studentName")
+                .value
+                .trim();
+
+            const phone =
+                document.getElementById("parentPhone")
+                .value
+                .trim();
+
+            const haloqa =
+                document.getElementById("haloqaName")
+                .value
+                .trim() ||
+                "الحلقة العامة";
+
+            const currentjuz =
+                document.getElementById("startJuz")
+                .value ||
+                "الجزء 1";
+
+            const message =
+                document.getElementById("addMessage");
+
+
+            if (!name || !phone) {
+
+                alert(
+                    "يرجى إدخال اسم الطالب ورقم الهاتف"
+                );
+
                 return;
             }
 
-            listContainer.innerHTML = students.map(s => `
-                <div class="student-item">
-                    <div class="student-title">
-                        <span>👤 ${s.name}</span>
-                        <span class="badge">📱 ${s.phone}</span>
+
+            try {
+
+                message.innerHTML = `
+                    <div class="loading">
+                        جاري حفظ الطالب...
                     </div>
-                    <p style="font-size:12px; margin:4px 0;">الحلقة: ${s.haloqa || '-'} | الجزء: ${s.currentjuz || '-'}</p>
-                    <button style="background:none; color:#ef4444; font-size:11px; padding:4px 0; text-align:left;" onclick="deleteStudent(${s.id})">حذف الطالب</button>
-                </div>
-            `).join('');
+                `;
+
+
+                const res = await fetch(
+                    API_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            ...headers,
+                            "Prefer": "return=representation"
+                        },
+
+                        body: JSON.stringify({
+                            name: name,
+                            phone: phone,
+                            haloqa: haloqa,
+                            currentjuz: currentjuz
+                        })
+                    }
+                );
+
+
+                const responseText =
+                    await res.text();
+
+
+                console.log(
+                    "Add Student Status:",
+                    res.status
+                );
+
+                console.log(
+                    "Add Student Response:",
+                    responseText
+                );
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        `HTTP ${res.status}: ${responseText}`
+                    );
+
+                }
+
+
+                /*
+                تنظيف الحقول
+                */
+
+                document.getElementById(
+                    "studentName"
+                ).value = "";
+
+                document.getElementById(
+                    "parentPhone"
+                ).value = "";
+
+                document.getElementById(
+                    "haloqaName"
+                ).value = "";
+
+
+                message.innerHTML = `
+                    <div class="success-box">
+                        ✅ تم حفظ الطالب بنجاح
+                    </div>
+                `;
+
+
+                /*
+                إعادة تحميل القائمة
+                */
+
+                fetchStudents();
+
+
+            } catch (err) {
+
+                console.error(
+                    "ADD STUDENT ERROR:",
+                    err
+                );
+
+
+                message.innerHTML = `
+
+                    <div class="error-box">
+
+                        <strong>
+                            ❌ فشل حفظ الطالب
+                        </strong>
+
+                        <br><br>
+
+                        ${escapeHTML(err.message)}
+
+                    </div>
+
+                `;
+            }
         }
 
+
+        /*
+        ==========================================
+        DELETE STUDENT
+        ==========================================
+        */
+
+        async function deleteStudent(id) {
+
+            if (
+                !confirm(
+                    "هل أنت متأكد من مسح هذا الطالب؟"
+                )
+            ) {
+                return;
+            }
+
+
+            try {
+
+                const res = await fetch(
+                    `${API_URL}?id=eq.${id}`,
+                    {
+                        method: "DELETE",
+                        headers: headers
+                    }
+                );
+
+
+                const responseText =
+                    await res.text();
+
+
+                console.log(
+                    "Delete Status:",
+                    res.status
+                );
+
+                console.log(
+                    "Delete Response:",
+                    responseText
+                );
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        `HTTP ${res.status}: ${responseText}`
+                    );
+
+                }
+
+
+                fetchStudents();
+
+
+            } catch (err) {
+
+                console.error(
+                    "DELETE ERROR:",
+                    err
+                );
+
+                alert(
+                    "فشل حذف الطالب:\n\n" +
+                    err.message
+                );
+
+            }
+        }
+
+
+        /*
+        ==========================================
+        PARENT SEARCH
+        ==========================================
+        */
+
+        async function searchParentStudent() {
+
+            const phoneInput =
+                document.getElementById(
+                    "loginPhone"
+                )
+                .value
+                .trim();
+
+            const resultDiv =
+                document.getElementById(
+                    "parentResult"
+                );
+
+
+            if (!phoneInput) {
+
+                alert(
+                    "يرجى إدخال رقم الهاتف"
+                );
+
+                return;
+            }
+
+
+            resultDiv.innerHTML = `
+                <div class="card">
+                    <div class="loading">
+                        جاري البحث أونلاين...
+                    </div>
+                </div>
+            `;
+
+
+            try {
+
+                const url =
+                    `${API_URL}?phone=eq.${encodeURIComponent(phoneInput)}&select=*`;
+
+
+                const res = await fetch(
+                    url,
+                    {
+                        method: "GET",
+                        headers: headers
+                    }
+                );
+
+
+                const responseText =
+                    await res.text();
+
+
+                console.log(
+                    "Parent Search Status:",
+                    res.status
+                );
+
+                console.log(
+                    "Parent Search Response:",
+                    responseText
+                );
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        `HTTP ${res.status}: ${responseText}`
+                    );
+
+                }
+
+
+                const data =
+                    JSON.parse(responseText);
+
+
+                if (
+                    !Array.isArray(data) ||
+                    data.length === 0
+                ) {
+
+                    resultDiv.innerHTML = `
+
+                        <div
+                            class="card"
+                            style="
+                                text-align:center;
+                                color:#ef4444;
+                            "
+                        >
+
+                            ❌ لم يتم العثور على طالب بهذا الرقم.
+
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+
+                resultDiv.innerHTML =
+                    data.map(s => `
+
+                        <div
+                            class="card"
+                            style="
+                                border-top:
+                                4px solid var(--primary);
+                            "
+                        >
+
+                            <h2 style="margin:0;">
+                                👤 الطالب:
+                                ${escapeHTML(s.name)}
+                            </h2>
+
+
+                            <p
+                                style="
+                                    margin:4px 0;
+                                    font-size:13px;
+                                    color:#4b5563;
+                                "
+                            >
+
+                                🕌 الحلقة:
+
+                                <strong>
+                                    ${escapeHTML(
+                                        s.haloqa ||
+                                        "العامة"
+                                    )}
+                                </strong>
+
+                            </p>
+
+
+                            <hr
+                                style="
+                                    border:none;
+                                    border-top:
+                                    1px solid #f3f4f6;
+                                    margin:8px 0;
+                                "
+                            >
+
+
+                            <p style="margin:6px 0;">
+
+                                📖
+                                <strong>
+                                    الجزء الحالي:
+                                </strong>
+
+                                ${escapeHTML(
+                                    s.currentjuz ||
+                                    "الجزء 1"
+                                )}
+
+                            </p>
+
+                        </div>
+
+                    `)
+                    .join("");
+
+
+            } catch (err) {
+
+                console.error(
+                    "PARENT SEARCH ERROR:",
+                    err
+                );
+
+
+                resultDiv.innerHTML = `
+
+                    <div class="error-box">
+
+                        <strong>
+                            ❌ خطأ في الاتصال
+                        </strong>
+
+                        <br><br>
+
+                        ${escapeHTML(err.message)}
+
+                    </div>
+
+                `;
+            }
+        }
+
+
+        /*
+        ==========================================
+        RENDER STUDENTS
+        ==========================================
+        */
+
+        function renderStudents(students) {
+
+            const listContainer =
+                document.getElementById(
+                    "studentsList"
+                );
+
+
+            if (
+                !Array.isArray(students) ||
+                students.length === 0
+            ) {
+
+                listContainer.innerHTML = `
+
+                    <p
+                        style="
+                            text-align:center;
+                            color:#6b7280;
+                        "
+                    >
+                        لا يوجد طلاب مضافون حتى الآن
+                    </p>
+
+                `;
+
+                return;
+            }
+
+
+            listContainer.innerHTML =
+                students.map(s => `
+
+                    <div class="student-item">
+
+                        <div class="student-title">
+
+                            <span>
+                                👤
+                                ${escapeHTML(s.name)}
+                            </span>
+
+
+                            <span class="badge">
+                                📱
+                                ${escapeHTML(s.phone)}
+                            </span>
+
+                        </div>
+
+
+                        <p
+                            style="
+                                font-size:12px;
+                                margin:4px 0;
+                            "
+                        >
+
+                            الحلقة:
+
+                            ${escapeHTML(
+                                s.haloqa || "-"
+                            )}
+
+                            |
+
+                            الجزء:
+
+                            ${escapeHTML(
+                                s.currentjuz || "-"
+                            )}
+
+                        </p>
+
+
+                        <button
+                            style="
+                                background:none;
+                                color:#ef4444;
+                                font-size:11px;
+                                padding:4px 0;
+                                text-align:left;
+                            "
+                            onclick="
+                                deleteStudent(${s.id})
+                            "
+                        >
+
+                            حذف الطالب
+
+                        </button>
+
+                    </div>
+
+                `)
+                .join("");
+        }
+
+
+        /*
+        ==========================================
+        SECURITY / HTML ESCAPE
+        ==========================================
+        */
+
+        function escapeHTML(value) {
+
+            if (value === null || value === undefined) {
+                return "";
+            }
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        /*
+        ==========================================
+        START
+        ==========================================
+        */
+
         fetchStudents();
+
     </script>
+
 </body>
 </html>
