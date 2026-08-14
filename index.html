@@ -109,7 +109,7 @@
             try {
                 const res = await fetch(API_URL, {
                     method: 'POST',
-                    headers,
+                    headers: headers,
                     body: JSON.stringify({ name, phone, haloqa, currentjuz })
                 });
 
@@ -120,7 +120,7 @@
                 document.getElementById('haloqaName').value = '';
                 fetchStudents();
             } catch (err) {
-                alert('فشل حفظ البيانات في السحابة');
+                alert('فشل حفظ البيانات في السحابة، تأكد من تنفيذ أمر SQL');
             }
         }
 
