@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية</title>
     <style>
-        :root { --primary: #065f46; --secondary: #047857; --accent: #d97706; --bg: #f3f4f6; }
+        :root { --primary: #065f46; --secondary: #047857; --bg: #f3f4f6; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
         .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 18px 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 15px; }
         .header h1 { margin: 0; font-size: 1.3rem; font-weight: bold; }
@@ -65,31 +65,28 @@
             <input type="tel" id="loginPhone" placeholder="أدخل رقم الهاتف (مثال: 091xxxxxxx)">
             <button onclick="searchParentStudent()" style="background: #2563eb;">عرض تقرير الطالب 📡</button>
         </div>
-
         <div id="parentResult"></div>
     </div>
 
     <script>
-        const URL = "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
-        const KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
+        const API_ENDPOINT = "https://lqhtharryzdanqfeqsa.supabase.co/rest/v1/students";
+        const API_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdGh0aGFycnl6ZGFucWZlcXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTczODUsImV4cCI6MjEwMjIzMzM4NX0.-eC4fiA2qTczriN8dvVVko-v_OfS5b0foKXCo-Yiyvw";
 
         const headers = {
-            'apikey': KEY,
-            'Authorization': 'Bearer ' + KEY,
+            'apikey': API_KEY,
+            'Authorization': 'Bearer ' + API_KEY,
             'Content-Type': 'application/json',
             'Prefer': 'return=representation'
         };
 
-        let students = [];
-
         async function fetchStudents() {
             try {
-                const res = await fetch(`${URL}?select=*&order=id.desc`, { headers });
-                if(!res.ok) throw new Error();
-                students = await res.json();
-                renderStudents();
+                const res = await fetch(`${API_ENDPOINT}?select=*&order=id.desc`, { headers });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                renderStudents(data);
             } catch (err) {
-                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">تعذر جلب البيانات، يرجى تشغيل أمر SQL في Supabase أولاً</p>`;
+                document.getElementById('studentsList').innerHTML = `<p style="color:red; text-align:center;">تعذر الاتصال، يرجى التأكد من الضغط على Run في Supabase</p>`;
             }
         }
 
@@ -109,29 +106,27 @@
             if (!name || !phone) return alert('يرجى إدخال اسم الطالب ورقم الهاتف');
 
             try {
-                const res = await fetch(URL, {
+                const res = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({ name, phone, haloqa, currentJuz })
                 });
 
-                if(!res.ok) throw new Error('حدث خطأ في الحفظ');
+                if (!res.ok) throw new Error();
 
                 document.getElementById('studentName').value = '';
                 document.getElementById('parentPhone').value = '';
                 document.getElementById('haloqaName').value = '';
                 fetchStudents();
-            } catch(err) {
-                alert('فشل إضافة الطالب، تأكد من تنفيذ كود SQL');
+            } catch (err) {
+                alert('حدث خطأ أثناء حفظ الطالب');
             }
         }
 
         async function deleteStudent(id) {
             if (confirm('هل أنت تأكد من مسح هذا الطالب؟')) {
-                try {
-                    await fetch(`${URL}?id=eq.${id}`, { method: 'DELETE', headers });
-                    fetchStudents();
-                } catch(e) { fetchStudents(); }
+                await fetch(`${API_ENDPOINT}?id=eq.${id}`, { method: 'DELETE', headers });
+                fetchStudents();
             }
         }
 
@@ -144,7 +139,7 @@
             resultDiv.innerHTML = '<p style="text-align:center;">جاري البحث...</p>';
 
             try {
-                const res = await fetch(`${URL}?phone=ilike.*${encodeURIComponent(phoneInput)}*&select=*`, { headers });
+                const res = await fetch(`${API_ENDPOINT}?phone=ilike.*${encodeURIComponent(phoneInput)}*&select=*`, { headers });
                 const data = await res.json();
 
                 if (!Array.isArray(data) || data.length === 0) {
@@ -160,12 +155,12 @@
                         <p style="margin:6px 0;">📖 <strong>الجزء الحالي:</strong> ${s.currentJuz || 'الجزء 1'}</p>
                     </div>
                 `).join('');
-            } catch(err) {
+            } catch (err) {
                 resultDiv.innerHTML = `<div class="card" style="text-align:center; color:#ef4444;">خطأ في الاتصال</div>`;
             }
         }
 
-        function renderStudents() {
+        function renderStudents(students) {
             const listContainer = document.getElementById('studentsList');
             if (!Array.isArray(students) || students.length === 0) {
                 listContainer.innerHTML = '<p style="text-align:center; color:#6b7280;">لا يوجد طلاب مضافون حتى الآن</p>';
