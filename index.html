@@ -7,16 +7,16 @@
     <style>
         :root { --primary: #065f46; --secondary: #047857; --accent: #d97706; --bg: #f3f4f6; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #1f2937; }
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 20px 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 15px; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 16px; padding: 18px 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 15px; }
         .header h1 { margin: 0; font-size: 1.3rem; font-weight: bold; }
-        .header p { margin: 5px 0 0; font-size: 0.85rem; opacity: 0.9; }
+        .header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.9; }
         .card { background: white; border-radius: 14px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .card h2 { color: var(--primary); margin-top: 0; font-size: 1.05rem; border-bottom: 2px solid #ecfdf5; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; text-align: center; }
         .stat-card { background: #ecfdf5; padding: 10px 5px; border-radius: 10px; border: 1px solid #a7f3d0; }
         .stat-card div { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
         .stat-card span { font-size: 0.7rem; color: #047857; }
-        input, select, button, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        input, select, button { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
         button { background: var(--primary); color: white; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; }
         .student-item { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; margin-bottom: 12px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
         .student-title { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #111827; margin-bottom: 6px; }
@@ -35,29 +35,25 @@
 </head>
 <body>
 
-    <!-- الهيدر الرئيسي -->
     <div class="header">
         <h1>🕌 مركز أم القرى</h1>
-        <p>لتحفيظ القرآن الكريم والسنة النبوية</p>
+        <p>لتحفيظ القرآن الكريم والسنة النبوية (رواية قالون عن نافع)</p>
     </div>
 
-    <!-- تبويبات التنقل -->
     <div class="nav-tabs">
         <button class="tab-btn active" id="tabMainBtn" onclick="switchTab('main')">إدارة الحضور والتحفيظ</button>
         <button class="tab-btn" id="tabOwnerBtn" onclick="switchTab('owner')">📊 لوحة المشرف العام</button>
     </div>
 
-    <!-- واجهة إدارة الحضور والتحفيظ -->
     <div id="tabMain">
-        <!-- إضافة طالب جديد -->
         <div class="card">
             <h2>➕ تسجيل طالب جديد</h2>
             <input type="text" id="studentName" placeholder="اسم الطالب الثلاثي">
             <input type="tel" id="parentPhone" placeholder="رقم واتساب ولي الأمر (مثال: 2189xxxxxxx)">
             <div class="form-row">
-                <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: حلقة الشاطبي)">
+                <input type="text" id="haloqaName" placeholder="اسم الحلقة (مثال: حلقة الإمام نافع)">
                 <select id="startJuz">
-                    <option value="">-- اختر جزء البداية --</option>
+                    <option value="">-- جزء البداية --</option>
                     <script>
                         for(let i=1; i<=30; i++) {
                             document.write(`<option value="الجزء ${i}">الجزء ${i}</option>`);
@@ -68,16 +64,13 @@
             <button onclick="addStudent()">حفظ الطالب في المركز</button>
         </div>
 
-        <!-- قائمة الطلاب -->
         <div class="card">
             <h2>👥 قائمة الطلاب ومتابعة الحفظ</h2>
             <div id="studentsList"></div>
         </div>
     </div>
 
-    <!-- واجهة المشرف العام (الأونر) -->
     <div id="tabOwner" style="display: none;">
-        <!-- الإحصائيات العامة -->
         <div class="card">
             <h2>📊 إحصائيات المركز</h2>
             <div class="stats-grid">
@@ -96,21 +89,60 @@
             </div>
         </div>
 
-        <!-- أداة النسخ الاحتياطي وتصدير البيانات -->
         <div class="card">
             <h2>⚙️ إدارة البيانات والنسخ الاحتياطي</h2>
-            <button onclick="exportData()" style="background: #2563eb; margin-bottom: 8px;">📥 تصدير نسختك الاحتياطية (تنزيل ملف البيانات)</button>
-            <button onclick="window.print()" style="background: #4b5563;">🖨️ طباعة تقرير المركز العام</button>
+            <button onclick="exportData()" style="background: #2563eb; margin-bottom: 8px;">📥 تصدير النسخة الاحتياطية</button>
+            <button onclick="window.print()" style="background: #4b5563;">🖨️ طباعة تقرير المركز</button>
         </div>
 
-        <!-- سجل الأحداث السابقة -->
         <div class="card">
-            <h2>📜 سجل العمليات والأنشطة اليومية</h2>
+            <h2>📜 سجل العمليات والأنشطة</h2>
             <div id="ownerWeeklyLogs"></div>
         </div>
     </div>
 
     <script>
+        const quranSurahs = [
+            { name: "الفاتحة", verses: 7 }, { name: "البقرة", verses: 286 }, { name: "آل عمران", verses: 200 },
+            { name: "النساء", verses: 176 }, { name: "المائدة", verses: 120 }, { name: "الأنعام", verses: 165 },
+            { name: "الأعراف", verses: 206 }, { name: "الأنفال", verses: 75 }, { name: "التوبة", verses: 129 },
+            { name: "يونس", verses: 109 }, { name: "هود", verses: 123 }, { name: "يوسف", verses: 111 },
+            { name: "الرعد", verses: 43 }, { name: "إبراهيم", verses: 52 }, { name: "الحجر", verses: 99 },
+            { name: "النحل", verses: 128 }, { name: "الإسراء", verses: 111 }, { name: "الكهف", verses: 110 },
+            { name: "مريم", verses: 98 }, { name: "طه", verses: 135 }, { name: "الأنبياء", verses: 112 },
+            { name: "الحج", verses: 78 }, { name: "المؤمنون", verses: 118 }, { name: "النور", verses: 64 },
+            { name: "الفرقان", verses: 77 }, { name: "الشعراء", verses: 227 }, { name: "النمل", verses: 93 },
+            { name: "القصص", verses: 88 }, { name: "العنكبوت", verses: 69 }, { name: "الروم", verses: 60 },
+            { name: "لقمان", verses: 34 }, { name: "السجدة", verses: 30 }, { name: "الأحزاب", verses: 73 },
+            { name: "سبأ", verses: 54 }, { name: "فاطر", verses: 45 }, { name: "يس", verses: 83 },
+            { name: "الصافات", verses: 182 }, { name: "ص", verses: 88 }, { name: "الزمر", verses: 75 },
+            { name: "غافر", verses: 85 }, { name: "فصلت", verses: 54 }, { name: "الشورى", verses: 53 },
+            { name: "الزخرف", verses: 89 }, { name: "الدخان", verses: 59 }, { name: "الجاثية", verses: 37 },
+            { name: "الأحقاف", verses: 35 }, { name: "محمد", verses: 38 }, { name: "الفتح", verses: 29 },
+            { name: "الحجرات", verses: 18 }, { name: "ق", verses: 45 }, { name: "الذاريات", verses: 60 },
+            { name: "الطور", verses: 49 }, { name: "النجم", verses: 62 }, { name: "القمر", verses: 55 },
+            { name: "الرحمن", verses: 78 }, { name: "الواقعة", verses: 96 }, { name: "الحديد", verses: 29 },
+            { name: "المجادلة", verses: 22 }, { name: "الحشر", verses: 24 }, { name: "الممتحنة", verses: 13 },
+            { name: "الصف", verses: 14 }, { name: "الجمعة", verses: 11 }, { name: "المنافقون", verses: 11 },
+            { name: "التغابن", verses: 18 }, { name: "الطلاق", verses: 12 }, { name: "التحريم", verses: 12 },
+            { name: "الملك", verses: 30 }, { name: "القلم", verses: 52 }, { name: "الحاقة", verses: 52 },
+            { name: "المعارج", verses: 44 }, { name: "نوح", verses: 28 }, { name: "الجن", verses: 28 },
+            { name: "المزمل", verses: 20 }, { name: "المدثر", verses: 56 }, { name: "القيامة", verses: 40 },
+            { name: "الإنسان", verses: 31 }, { name: "المرسلات", verses: 50 }, { name: "النبأ", verses: 40 },
+            { name: "النازعات", verses: 46 }, { name: "عبس", verses: 42 }, { name: "التكوير", verses: 29 },
+            { name: "الإنفطار", verses: 19 }, { name: "المطففين", verses: 36 }, { name: "الانشقاق", verses: 25 },
+            { name: "البروج", verses: 22 }, { name: "الطارق", verses: 17 }, { name: "الأعلى", verses: 19 },
+            { name: "الغاشية", verses: 26 }, { name: "الفجر", verses: 30 }, { name: "البلد", verses: 20 },
+            { name: "الشمس", verses: 15 }, { name: "الليل", verses: 21 }, { name: "الضحى", verses: 11 },
+            { name: "الشرح", verses: 8 }, { name: "التين", verses: 8 }, { name: "العلق", verses: 19 },
+            { name: "القدر", verses: 5 }, { name: "البينة", verses: 8 }, { name: "الزلزلة", verses: 8 },
+            { name: "العاديات", verses: 11 }, { name: "القارعة", verses: 11 }, { name: "التكاثر", verses: 8 },
+            { name: "العصر", verses: 3 }, { name: "الهمزة", verses: 9 }, { name: "الفيل", verses: 5 },
+            { name: "قريش", verses: 4 }, { name: "الماعون", verses: 7 }, { name: "الكوثر", verses: 3 },
+            { name: "الكافرون", verses: 6 }, { name: "النصر", verses: 3 }, { name: "المسد", verses: 5 },
+            { name: "الإخلاص", verses: 4 }, { name: "الفلق", verses: 5 }, { name: "الناس", verses: 6 }
+        ];
+
         let students = JSON.parse(localStorage.getItem('um_alqura_students')) || [];
         let logs = JSON.parse(localStorage.getItem('um_alqura_logs')) || [];
 
@@ -143,7 +175,9 @@
                 phone,
                 haloqa,
                 currentJuz: juz,
-                todayProgress: '',
+                selectedSurah: "النبأ",
+                fromVerse: 1,
+                toVerse: 10,
                 weeklyProgress: '',
                 lastExamGrade: 'لم يختبر'
             });
@@ -180,14 +214,14 @@
                 msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بأن ابنكم الطالب: *${student.name}*\nكان *غائباً* اليوم (${today}) عن الحلقة.`;
                 logs.push({ time: today, text: `تسجيل غياب الطالب: ${student.name}` });
             } else if (type === 'present') {
-                const progText = student.todayProgress ? `\nمقدار حفظ اليوم: ${student.todayProgress}` : '';
+                const progText = `\nمقدار حفظ اليوم: سورة ${student.selectedSurah || 'النبأ'} (من آية ${student.fromVerse || 1} إلى آية ${student.toVerse || 10})`;
                 msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\nالسلام عليكم ورحمة الله وبركاته،\nنفيدكم بحضور ابنكم الطالب: *${student.name}*\nالحلقة: *${student.haloqa}*\nالجزء الحالي: *${student.currentJuz}*${progText}\nبارك الله في جهوده.`;
                 logs.push({ time: today, text: `تسجيل حضور الطالب: ${student.name}` });
             } else if (type === 'weekly') {
                 const weekProg = student.weeklyProgress || 'مستمر في برنامج الحفظ والمراجعة المقرر';
-                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n📊 *التقرير الأسبوعي لمستوى الطالب*\nالاسم: *${student.name}*\nالحلقة: *${student.haloqa}*\nالجزء الحالي: *${student.currentJuz}*\n\nملخص حفظ ومراجعة هذا الأسبوع:\n${weekProg}\n\nشاكرين اهتمامكم ومتابعتكم المستمرة.`;
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n📊 *التقرير الأسبوعي لمستوى الطالب*\nالاسم: *${student.name}*\nالحلقة: *${student.haloqa}*\nالجزء الحالي: *${student.currentJuz}*\n\nملخص الانجاز هذا الأسبوع:\n${weekProg}\n\nشاكرين اهتمامكم ومتابعتكم المستمرة.`;
             } else if (type === 'exam') {
-                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n⭐ *نتيجة اختبار القرآن الكريم*\nالطالب: *${student.name}*\nالجزء المنسوب: *${student.currentJuz}*\nالتقييم: *${student.lastExamGrade}*\n\nنسأل الله أن يجعله من أهل القرآن والخاطبين به.`;
+                msg = `مركز أم القرى لتحفيظ القرآن الكريم والسنة النبوية 🕌\n\n⭐ *نتيجة اختبار القرآن الكريم*\nالطالب: *${student.name}*\nالجزء المنسوب: *${student.currentJuz}*\nالتقييم: *${student.lastExamGrade}*\n\nنسأل الله أن يجعله من أهل القرآن.`;
                 logs.push({ time: today, text: `تسجيل اختبار للطالب ${student.name} بتقدير (${student.lastExamGrade})` });
             }
 
@@ -211,6 +245,11 @@
                     juzOptions += `<option value="${juzVal}" ${selected}>${juzVal}</option>`;
                 }
 
+                let surahOptions = quranSurahs.map(surah => {
+                    let selected = (s.selectedSurah === surah.name) ? 'selected' : '';
+                    return `<option value="${surah.name}" ${selected}>سورة ${surah.name} (${surah.verses} آية)</option>`;
+                }).join('');
+
                 return `
                 <div class="student-item">
                     <div class="student-title">
@@ -231,8 +270,19 @@
                         </select>
                     </div>
 
-                    <input type="text" placeholder="حفظ اليوم (مثال: سورة البقرة من آية 1 إلى 20)" value="${s.todayProgress || ''}" onchange="updateField(${s.id}, 'todayProgress', this.value)">
-                    <input type="text" placeholder="إنجاز الأسبوع (ملخص تقرير ولي الأمر)" value="${s.weeklyProgress || ''}" onchange="updateField(${s.id}, 'weeklyProgress', this.value)">
+                    <!-- أداة اختيار السورة والآيات -->
+                    <div style="background:#f9fafb; padding:8px; border-radius:8px; margin:6px 0; border:1px solid #f3f4f6;">
+                        <label style="font-size:11px; font-weight:bold; color:#065f46;">📖 حفظ اليوم (مصحف قالون):</label>
+                        <select onchange="updateField(${s.id}, 'selectedSurah', this.value)">
+                            ${surahOptions}
+                        </select>
+                        <div class="form-row">
+                            <input type="number" placeholder="من آية" value="${s.fromVerse || 1}" onchange="updateField(${s.id}, 'fromVerse', this.value)">
+                            <input type="number" placeholder="إلى آية" value="${s.toVerse || 10}" onchange="updateField(${s.id}, 'toVerse', this.value)">
+                        </div>
+                    </div>
+
+                    <input type="text" placeholder="إنجاز الأسبوع (لتقرير ولي الأمر)" value="${s.weeklyProgress || ''}" onchange="updateField(${s.id}, 'weeklyProgress', this.value)">
 
                     <div class="actions">
                         <button class="status-btn present" onclick="sendWhatsApp(${s.id}, 'present')">حاضر 💬</button>
@@ -248,7 +298,6 @@
 
         function renderOwnerDashboard() {
             document.getElementById('totalStudentsCount').innerText = students.length;
-            
             const halaqat = [...new Set(students.map(s => s.haloqa))];
             document.getElementById('totalHalaqatCount').innerText = halaqat.length;
             document.getElementById('todayLogsCount').innerText = logs.length;
